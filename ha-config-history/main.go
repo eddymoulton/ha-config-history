@@ -39,8 +39,6 @@ func main() {
 	}))
 	slog.SetDefault(logger)
 
-	slog.Info("Only here for a test again")
-
 	config := types.LoadConfig("config.json")
 
 	server := core.NewServer(config)
