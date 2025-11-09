@@ -14,8 +14,8 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// sanitizePath validates that a path doesn't contain directory traversal attempts
-func sanitizePath(path string) error {
+// SanitizePath validates that a path doesn't contain directory traversal attempts
+func SanitizePath(path string) error {
 	cleaned := filepath.Clean(path)
 	if strings.Contains(cleaned, "..") {
 		return fmt.Errorf("invalid path: contains directory traversal")
@@ -271,13 +271,13 @@ func dirMetrics(path string) (int, int64, error) {
 
 func GetConfigBackup(backupFolder, group, id, filename string) ([]byte, error) {
 	// Validate path components for directory traversal
-	if err := sanitizePath(group); err != nil {
+	if err := SanitizePath(group); err != nil {
 		return nil, fmt.Errorf("invalid group parameter: %w", err)
 	}
-	if err := sanitizePath(id); err != nil {
+	if err := SanitizePath(id); err != nil {
 		return nil, fmt.Errorf("invalid id parameter: %w", err)
 	}
-	if err := sanitizePath(filename); err != nil {
+	if err := SanitizePath(filename); err != nil {
 		return nil, fmt.Errorf("invalid filename parameter: %w", err)
 	}
 
@@ -303,10 +303,10 @@ type BackupInfo struct {
 
 func ListConfigBackups(backupFolder, group, configID string) ([]BackupInfo, error) {
 	// Validate path components for directory traversal
-	if err := sanitizePath(group); err != nil {
+	if err := SanitizePath(group); err != nil {
 		return nil, fmt.Errorf("invalid group parameter: %w", err)
 	}
-	if err := sanitizePath(configID); err != nil {
+	if err := SanitizePath(configID); err != nil {
 		return nil, fmt.Errorf("invalid configID parameter: %w", err)
 	}
 
@@ -405,5 +405,115 @@ func RestorePartialFile(filepath string, blobToRestore []byte, options types.Con
 		return fmt.Errorf("failed to write updated config file %s: %w", filepath, err)
 	}
 
+	return nil
+}
+
+// DeleteBackup deletes a single backup file and returns an error if it fails
+func DeleteBackup(backupFolder, group, id, filename string) error {
+	// Validate path components for directory traversal
+	if err := SanitizePath(group); err != nil {
+		return fmt.Errorf("invalid group parameter: %w", err)
+	}
+	if err := SanitizePath(id); err != nil {
+		return fmt.Errorf("invalid id parameter: %w", err)
+	}
+	if err := SanitizePath(filename); err != nil {
+		return fmt.Errorf("invalid filename parameter: %w", err)
+	}
+
+	backupPath := filepath.Join(backupFolder, group, id, filename)
+
+	// Check if file exists
+	if _, err := os.Stat(backupPath); os.IsNotExist(err) {
+		return fmt.Errorf("backup file not found: %s", filename)
+	}
+
+	// Delete the file
+	if err := os.Remove(backupPath); err != nil {
+		return fmt.Errorf("failed to delete backup file: %w", err)
+	}
+
+	slog.Info("Backup deleted", "file", backupPath)
+	return nil
+}
+
+// UpdateMetadataAfterDeletion updates the metadata.json after a backup is deleted
+// Returns nil metadata if no backups remain
+func UpdateMetadataAfterDeletion(backupFolder, group, id string) (*types.ConfigMetadata, error) {
+	backupDirectory := filepath.Join(backupFolder, group, id)
+
+	// Get updated metrics
+	backupsCount, backupsSize, err := dirMetrics(backupDirectory)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get directory metrics for %s: %w", backupDirectory, err)
+	}
+
+	// If no backups remain, delete metadata file and directory
+	if backupsCount == 0 {
+		metadataPath := filepath.Join(backupDirectory, "metadata.json")
+		if err := os.Remove(metadataPath); err != nil && !os.IsNotExist(err) {
+			slog.Warn("Failed to remove metadata file", "path", metadataPath, "error", err)
+		}
+
+		// Try to remove the directory
+		if err := os.Remove(backupDirectory); err != nil {
+			slog.Warn("Failed to remove empty backup directory", "path", backupDirectory, "error", err)
+		}
+
+		return nil, nil
+	}
+
+	// Read existing metadata to preserve other fields
+	metadataPath := filepath.Join(backupDirectory, "metadata.json")
+	metadataBlob, err := os.ReadFile(metadataPath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read metadata file %s: %w", metadataPath, err)
+	}
+
+	var metadata types.ConfigMetadata
+	if err := json.Unmarshal(metadataBlob, &metadata); err != nil {
+		return nil, fmt.Errorf("failed to parse metadata JSON in %s: %w", metadataPath, err)
+	}
+
+	// Update counts
+	metadata.BackupCount = backupsCount
+	metadata.BackupsSize = backupsSize
+
+	// Write updated metadata
+	updatedMetadataBlob, err := json.Marshal(metadata)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal metadata: %w", err)
+	}
+
+	if err := os.WriteFile(metadataPath, updatedMetadataBlob, 0644); err != nil {
+		return nil, fmt.Errorf("failed to write metadata: %w", err)
+	}
+
+	return &metadata, nil
+}
+
+// DeleteAllBackups deletes all backups for a config (removes entire directory)
+func DeleteAllBackups(backupFolder, group, id string) error {
+	// Validate path components for directory traversal
+	if err := SanitizePath(group); err != nil {
+		return fmt.Errorf("invalid group parameter: %w", err)
+	}
+	if err := SanitizePath(id); err != nil {
+		return fmt.Errorf("invalid id parameter: %w", err)
+	}
+
+	configFolder := filepath.Join(backupFolder, group, id)
+
+	// Check if directory exists
+	if _, err := os.Stat(configFolder); os.IsNotExist(err) {
+		return fmt.Errorf("config directory not found: %s", id)
+	}
+
+	// Delete the entire directory
+	if err := os.RemoveAll(configFolder); err != nil {
+		return fmt.Errorf("failed to delete config directory: %w", err)
+	}
+
+	slog.Info("All backups deleted", "group", group, "id", id)
 	return nil
 }

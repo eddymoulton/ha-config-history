@@ -6,7 +6,10 @@
   import LoadingState from "./LoadingState.svelte";
 
   export let config: ConfigMetadata | null = null;
-  export let onBackupClick: (backup: BackupInfo, allBackups: BackupInfo[]) => void;
+  export let onBackupClick: (
+    backup: BackupInfo,
+    allBackups: BackupInfo[]
+  ) => void;
   export let selectedBackup: BackupInfo | null = null;
   export let onBack: (() => void) | undefined = undefined;
 
@@ -14,6 +17,9 @@
   let loading = false;
   let error: string | null = null;
   let isMobile = false;
+  let backupToDelete: BackupInfo | null = null;
+  let showDeleteConfirm = false;
+  let deleting = false;
 
   function checkMobile() {
     isMobile = window.innerWidth <= 1024;
@@ -21,8 +27,8 @@
 
   onMount(() => {
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   });
 
   $: if (config) {
@@ -51,6 +57,36 @@
 
   function handleBackupClick(backup: BackupInfo) {
     onBackupClick(backup, backups);
+  }
+
+  function handleDeleteClick(backup: BackupInfo, event: Event) {
+    event.stopPropagation();
+    backupToDelete = backup;
+    showDeleteConfirm = true;
+  }
+
+  function cancelDelete() {
+    showDeleteConfirm = false;
+    backupToDelete = null;
+  }
+
+  async function confirmDelete() {
+    if (!config || !backupToDelete) return;
+
+    deleting = true;
+    try {
+      await api.deleteBackup(config.group, config.id, backupToDelete.filename);
+
+      // Reload backups after successful deletion
+      await loadBackups();
+
+      showDeleteConfirm = false;
+      backupToDelete = null;
+    } catch (err) {
+      error = err instanceof Error ? err.message : "Failed to delete backup";
+    } finally {
+      deleting = false;
+    }
   }
 </script>
 
@@ -86,7 +122,9 @@
     {loading}
     {error}
     empty={!config || (!loading && !error && backups.length === 0)}
-    emptyMessage={!config ? "Select an config to view backups" : "No backups found for this config"}
+    emptyMessage={!config
+      ? "Select an config to view backups"
+      : "No backups found for this config"}
     loadingMessage="Loading backups..."
   />
 
@@ -107,15 +145,26 @@
           <div class="backup-header">
             <div class="backup-filename">
               {backup.date}
-              {#if index === 0}
-                <span class="current-badge">Current</span>
-              {/if}
             </div>
-            <div class="backup-size">{formatFileSize(backup.size)}</div>
+            <div class="backup-actions">
+              <div class="backup-size">{formatFileSize(backup.size)}</div>
+              <button
+                class="delete-btn"
+                on:click={(e) => handleDeleteClick(backup, e)}
+                type="button"
+                title="Delete backup"
+                aria-label="Delete backup"
+              >
+                🗑️
+              </button>
+            </div>
           </div>
 
           <div class="backup-date">
             {formatRelativeTime(backup.date)}
+            {#if index === 0}
+              <span class="current-badge">Current</span>
+            {/if}
           </div>
         </div>
       {/each}
@@ -128,6 +177,48 @@
     </div>
   {/if}
 </div>
+
+{#if showDeleteConfirm}
+  <div
+    class="modal-overlay"
+    role="presentation"
+    on:click={cancelDelete}
+    on:keydown={(e) => e.key === "Escape" && cancelDelete()}
+  >
+    <div
+      class="modal-content"
+      role="dialog"
+      aria-modal="true"
+      tabindex="-1"
+      on:click={(e) => e.stopPropagation()}
+      on:keydown={(e) => e.stopPropagation()}
+    >
+      <h3>Delete Backup?</h3>
+      <p>Are you sure you want to delete this backup?</p>
+      {#if backupToDelete}
+        <p class="backup-info">{backupToDelete.filename}</p>
+      {/if}
+      <div class="modal-actions">
+        <button
+          class="cancel-btn"
+          on:click={cancelDelete}
+          type="button"
+          disabled={deleting}
+        >
+          Cancel
+        </button>
+        <button
+          class="confirm-delete-btn"
+          on:click={confirmDelete}
+          type="button"
+          disabled={deleting}
+        >
+          {deleting ? "Deleting..." : "Delete"}
+        </button>
+      </div>
+    </div>
+  </div>
+{/if}
 
 <style>
   .backup-list-container {
@@ -265,15 +356,46 @@
     letter-spacing: 0.5px;
   }
 
+  .backup-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
   .backup-size {
     color: var(--secondary-text-color, #9b9b9b);
     font-size: 0.85rem;
     font-weight: 500;
+    min-width: 50px;
+    text-align: right;
+  }
+
+  .delete-btn {
+    background: transparent;
+    border: none;
+    color: var(--error-color, #f44336);
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+  }
+
+  .delete-btn:hover {
+    opacity: 1;
+    background: rgba(244, 67, 54, 0.1);
+    transform: scale(1.1);
   }
 
   .backup-date {
     color: var(--secondary-text-color, #9b9b9b);
     font-size: 0.8rem;
+    display: flex;
+    gap: 0.5rem;
   }
 
   .footer {
@@ -287,6 +409,15 @@
     font-size: 0.9rem;
     margin: 0;
     text-align: center;
+  }
+
+  .backup-info {
+    font-family: monospace;
+    background: var(--ha-card-border-color, #2c2c2e);
+    padding: 0.5rem;
+    border-radius: 4px;
+    color: var(--primary-text-color, #ffffff);
+    font-size: 0.85rem;
   }
 
   @media (max-width: 1024px) {

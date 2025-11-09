@@ -194,6 +194,82 @@
     border: 0;
   }
 
+  /* Shared modal styles */
+  :global(.modal-overlay) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  :global(.modal-content) {
+    background: var(--ha-card-background, #1c1c1e);
+    border: 1px solid var(--ha-card-border-color, #2c2c2e);
+    border-radius: 8px;
+    padding: 2rem;
+    max-width: 450px;
+    width: 90%;
+  }
+
+  :global(.modal-content h3) {
+    margin: 0 0 1rem 0;
+    color: var(--primary-text-color, #ffffff);
+    font-size: 1.3rem;
+  }
+
+  :global(.modal-content p) {
+    margin: 0 0 1rem 0;
+    color: var(--secondary-text-color, #9b9b9b);
+  }
+
+  :global(.modal-actions) {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+  }
+
+  :global(.cancel-btn),
+  :global(.confirm-delete-btn) {
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  :global(.cancel-btn) {
+    background: var(--ha-card-border-color, #2c2c2e);
+    color: var(--primary-text-color, #ffffff);
+  }
+
+  :global(.cancel-btn:hover:not(:disabled)) {
+    background: var(--ha-card-border-color, #3c3c3e);
+  }
+
+  :global(.confirm-delete-btn) {
+    background: var(--error-color, #f44336);
+    color: white;
+  }
+
+  :global(.confirm-delete-btn:hover:not(:disabled)) {
+    background: #d32f2f;
+  }
+
+  :global(.cancel-btn:disabled),
+  :global(.confirm-delete-btn:disabled) {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
   .app {
     min-height: 100vh;
     display: flex;

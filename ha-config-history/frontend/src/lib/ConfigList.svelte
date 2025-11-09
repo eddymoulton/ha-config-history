@@ -13,6 +13,9 @@
   let error: string | null = null;
   let selectedGroup: string = "all";
   let searchQuery: string = "";
+  let configToDelete: ConfigMetadata | null = null;
+  let showDeleteConfirm = false;
+  let deleting = false;
 
   $: groups = Array.from(new Set(configs.map((c) => c.group))).sort();
   $: filteredConfigs = configs
@@ -50,6 +53,42 @@
     // Auto-select first config in the newly selected group
     if (filteredConfigs.length > 0) {
       onConfigClick(filteredConfigs[0]);
+    }
+  }
+
+  function handleDeleteClick(config: ConfigMetadata, event: Event) {
+    event.stopPropagation();
+    configToDelete = config;
+    showDeleteConfirm = true;
+  }
+
+  function cancelDelete() {
+    showDeleteConfirm = false;
+    configToDelete = null;
+  }
+
+  async function confirmDelete() {
+    if (!configToDelete) return;
+
+    deleting = true;
+    try {
+      await api.deleteAllBackups(configToDelete.group, configToDelete.id);
+
+      // If the deleted config was selected, clear selection
+      if (selectedConfig?.id === configToDelete.id) {
+        selectedConfig = null;
+      }
+
+      // Reload configs after successful deletion
+      await loadConfigs();
+
+      showDeleteConfirm = false;
+      configToDelete = null;
+    } catch (err) {
+      error =
+        err instanceof Error ? err.message : "Failed to delete config backups";
+    } finally {
+      deleting = false;
     }
   }
 </script>
@@ -115,6 +154,15 @@
           >
             <div class="automation-header">
               <h3 class="automation-title">{config.friendlyName}</h3>
+              <button
+                class="delete-btn"
+                on:click={(e) => handleDeleteClick(config, e)}
+                type="button"
+                title="Delete all backups"
+                aria-label="Delete all backups"
+              >
+                🗑️
+              </button>
             </div>
 
             <div class="automation-stats">
@@ -135,6 +183,56 @@
     {/if}
   {/if}
 </div>
+
+{#if showDeleteConfirm}
+  <div
+    class="modal-overlay"
+    on:click={cancelDelete}
+    on:keydown={(e) => e.key === "Escape" && cancelDelete()}
+    role="presentation"
+  >
+    <div
+      class="modal-content"
+      on:click={(e) => e.stopPropagation()}
+      on:keydown={(e) => e.stopPropagation()}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="delete-modal-title"
+      tabindex="-1"
+    >
+      <h3 id="delete-modal-title">Delete All Backups?</h3>
+      <h3>Delete All Backups?</h3>
+      <p>Are you sure you want to delete ALL backups for this config?</p>
+      {#if configToDelete}
+        <p class="config-info">{configToDelete.friendlyName}</p>
+        <p class="warning-text">
+          ⚠️ This will delete {configToDelete.backupCount} backup{configToDelete.backupCount !==
+          1
+            ? "s"
+            : ""} and cannot be undone!
+        </p>
+      {/if}
+      <div class="modal-actions">
+        <button
+          class="cancel-btn"
+          on:click={cancelDelete}
+          type="button"
+          disabled={deleting}
+        >
+          Cancel
+        </button>
+        <button
+          class="confirm-delete-btn"
+          on:click={confirmDelete}
+          type="button"
+          disabled={deleting}
+        >
+          {deleting ? "Deleting..." : "Delete All"}
+        </button>
+      </div>
+    </div>
+  </div>
+{/if}
 
 <style>
   .automation-list {
@@ -254,6 +352,10 @@
 
   .automation-header {
     margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
 
   .automation-title {
@@ -262,6 +364,29 @@
     font-weight: 500;
     margin: 0 0 0.5rem 0;
     line-height: 1.3;
+    flex: 1;
+  }
+
+  .delete-btn {
+    background: transparent;
+    border: none;
+    color: var(--error-color, #f44336);
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+
+  .delete-btn:hover {
+    opacity: 1;
+    background: rgba(244, 67, 54, 0.1);
+    transform: scale(1.1);
   }
 
   .automation-stats {
@@ -286,6 +411,21 @@
     color: var(--primary-text-color, #ffffff);
     font-size: 1rem;
     font-weight: 400;
+  }
+
+  .config-info {
+    font-weight: 600;
+    background: var(--ha-card-border-color, #2c2c2e);
+    padding: 0.5rem;
+    border-radius: 4px;
+    color: var(--primary-text-color, #ffffff);
+    font-size: 0.95rem;
+  }
+
+  .warning-text {
+    color: var(--error-color, #f44336);
+    font-weight: 500;
+    font-size: 0.9rem;
   }
 
   @media (max-width: 768px) {

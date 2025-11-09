@@ -44,6 +44,7 @@
   }
 </script>
 
+<!-- svelte-ignore a11y_no_interactive_element_to_noninteractive_role -->
 <button
   type="button"
   class="resize-handle"

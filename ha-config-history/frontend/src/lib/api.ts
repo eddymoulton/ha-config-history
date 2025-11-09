@@ -107,6 +107,35 @@ export class ApiClient {
     }
     return response.json();
   }
+
+  async deleteBackup(
+    group: string,
+    id: string,
+    filename: string
+  ): Promise<{ status: string }> {
+    const response = await fetch(
+      `${API_BASE}/configs/${group}/${id}/backups/${encodeURIComponent(
+        filename
+      )}`,
+      {
+        method: "DELETE",
+      }
+    );
+    if (!response.ok) {
+      throw new Error(`Failed to delete backup: ${response.statusText}`);
+    }
+    return response.json();
+  }
+
+  async deleteAllBackups(group: string, id: string): Promise<{ status: string }> {
+    const response = await fetch(`${API_BASE}/configs/${group}/${id}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to delete all backups: ${response.statusText}`);
+    }
+    return response.json();
+  }
 }
 
 export const api = new ApiClient();

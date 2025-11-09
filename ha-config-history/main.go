@@ -76,6 +76,8 @@ func main() {
 	r.GET("/configs/:group/:id/backups/:filename", api.GetConfigBackupHandler(server))
 	r.GET("/configs/:group/:id/compare/:left/diff/:right", api.GetBackupDiffHandler(server))
 	r.POST("/configs/:group/:id/backups/:filename/restore", api.RestoreBackupHandler(server))
+	r.DELETE("/configs/:group/:id/backups/:filename", api.DeleteConfigBackupHandler(server))
+	r.DELETE("/configs/:group/:id", api.DeleteAllConfigBackupsHandler(server))
 	r.POST("/backup", api.ProcessConfigsHandler(server))
 	r.GET("/settings", api.GetSettingsHandler(server))
 	r.PUT("/settings", api.UpdateSettingsHandler(server))

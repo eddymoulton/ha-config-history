@@ -961,7 +961,7 @@ func TestRestoreBackupHandler(t *testing.T) {
 	})
 }
 
-// TestSanitizePath_SecurityVulnerabilities tests the sanitizePath function directly
+// TestSanitizePath_SecurityVulnerabilities tests the SanitizePath function directly
 // to identify security vulnerabilities in path validation
 func TestSanitizePath(t *testing.T) {
 	t.Run("Security Vulnerabilities", func(t *testing.T) {
