@@ -108,7 +108,6 @@ func main() {
 	}()
 
 	slog.Info("Starting API server", "port", config.Port)
-	slog.Info("Try curl", "url", "http://localhost"+config.Port+"/configs")
 	if err := r.Run(config.Port); err != nil {
 		slog.Error("Failed to start server", "error", err)
 		os.Exit(1)

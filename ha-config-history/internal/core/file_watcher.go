@@ -15,7 +15,7 @@ func (s *Server) startFileWatcher() {
 				if !ok {
 					return
 				}
-				slog.Info("File watcher event", "file", event.Name, "event", event.Op)
+				slog.Debug("File watcher event", "file", event.Name, "event", event.Op)
 
 				s.State.Mu.RLock()
 				options, exists := s.State.FileLookup[event.Name]
