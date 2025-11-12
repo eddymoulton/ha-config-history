@@ -7,18 +7,18 @@
   import ResizeHandle from "./ResizeHandle.svelte";
   import type { ConfigMetadata, BackupInfo } from "./types";
 
-  let selectedConfig: ConfigMetadata | null = null;
-  let selectedBackup: BackupInfo | null = null;
-  let allBackups: BackupInfo[] = [];
-  let showSettings = false;
+  let selectedConfig: ConfigMetadata | null = $state(null);
+  let selectedBackup: BackupInfo | null = $state(null);
+  let allBackups: BackupInfo[] = $state([]);
+  let showSettings = $state(false);
 
   // Column widths (in pixels)
   const MIN_COLUMN_WIDTH = 250;
   const DEFAULT_CONFIG_WIDTH = 600;
   const DEFAULT_BACKUP_WIDTH = 350;
 
-  let configColumnWidth = DEFAULT_CONFIG_WIDTH;
-  let backupColumnWidth = DEFAULT_BACKUP_WIDTH;
+  let configColumnWidth = $state(DEFAULT_CONFIG_WIDTH);
+  let backupColumnWidth = $state(DEFAULT_BACKUP_WIDTH);
 
   async function handleConfigClick(config: ConfigMetadata) {
     selectedConfig = config;
@@ -80,7 +80,7 @@
 <main class="app">
   <header class="app-header">
     <h1>Home Assistant Config History</h1>
-    <button class="settings-btn" type="button" on:click={handleOpenSettings}>
+    <button class="settings-btn" type="button" onclick={handleOpenSettings}>
       Settings
     </button>
   </header>

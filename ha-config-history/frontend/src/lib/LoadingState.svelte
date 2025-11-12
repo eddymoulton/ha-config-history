@@ -1,9 +1,19 @@
 <script lang="ts">
-  export let loading: boolean = false;
-  export let error: string | null = null;
-  export let empty: boolean = false;
-  export let emptyMessage: string = "No items found";
-  export let loadingMessage: string = "Loading...";
+  type Props = {
+    loading?: boolean;
+    error?: string | null;
+    empty?: boolean;
+    emptyMessage?: string;
+    loadingMessage?: string;
+  };
+
+  let {
+    loading = false,
+    error = null,
+    empty = false,
+    emptyMessage = "No items found",
+    loadingMessage = "Loading...",
+  }: Props = $props();
 </script>
 
 {#if loading}

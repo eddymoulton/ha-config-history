@@ -5,21 +5,27 @@
   import { formatFileSize, formatRelativeTime } from "./utils";
   import LoadingState from "./LoadingState.svelte";
 
-  export let config: ConfigMetadata | null = null;
-  export let onBackupClick: (
-    backup: BackupInfo,
-    allBackups: BackupInfo[]
-  ) => void;
-  export let selectedBackup: BackupInfo | null = null;
-  export let onBack: (() => void) | undefined = undefined;
+  type Props = {
+    config: ConfigMetadata | null;
+    onBackupClick: (backup: BackupInfo, allBackups: BackupInfo[]) => void;
+    selectedBackup: BackupInfo | null;
+    onBack?: (() => void) | undefined;
+  };
 
-  let backups: BackupInfo[] = [];
-  let loading = false;
-  let error: string | null = null;
-  let isMobile = false;
-  let backupToDelete: BackupInfo | null = null;
-  let showDeleteConfirm = false;
-  let deleting = false;
+  let {
+    config = null,
+    onBackupClick,
+    selectedBackup = null,
+    onBack = undefined,
+  }: Props = $props();
+
+  let backups: BackupInfo[] = $state([]);
+  let loading = $state(false);
+  let error: string | null = $state(null);
+  let isMobile = $state(false);
+  let backupToDelete: BackupInfo | null = $state(null);
+  let showDeleteConfirm = $state(false);
+  let deleting = $state(false);
 
   function checkMobile() {
     isMobile = window.innerWidth <= 1024;
@@ -31,9 +37,9 @@
     return () => window.removeEventListener("resize", checkMobile);
   });
 
-  $: if (config) {
+  $effect(() => {
     loadBackups();
-  }
+  });
 
   async function loadBackups() {
     if (!config) return;
@@ -91,7 +97,7 @@
       {#if onBack && isMobile}
         <button
           class="back-btn"
-          on:click={onBack}
+          onclick={onBack}
           type="button"
           aria-label="Back to configs"
         >
@@ -102,7 +108,7 @@
       {#if config}
         <button
           class="refresh-btn"
-          on:click={loadBackups}
+          onclick={loadBackups}
           type="button"
           title="Refresh backups"
           aria-label="Refresh backups"
@@ -137,8 +143,8 @@
             : ''} {selectedBackup?.filename === backup.filename
             ? 'selected'
             : ''}"
-          on:click={() => handleBackupClick(backup)}
-          on:keydown={(e) => e.key === "Enter" && handleBackupClick(backup)}
+          onclick={() => handleBackupClick(backup)}
+          onkeydown={(e) => e.key === "Enter" && handleBackupClick(backup)}
           tabindex="0"
           role="button"
         >
@@ -150,7 +156,7 @@
               <div class="backup-size">{formatFileSize(backup.size)}</div>
               <button
                 class="delete-btn"
-                on:click={(e) => handleDeleteClick(backup, e)}
+                onclick={(e) => handleDeleteClick(backup, e)}
                 type="button"
                 title="Delete backup"
                 aria-label="Delete backup"
@@ -176,16 +182,16 @@
   <div
     class="modal-overlay"
     role="presentation"
-    on:click={cancelDelete}
-    on:keydown={(e) => e.key === "Escape" && cancelDelete()}
+    onclick={cancelDelete}
+    onkeydown={(e) => e.key === "Escape" && cancelDelete()}
   >
     <div
       class="modal-content"
       role="dialog"
       aria-modal="true"
       tabindex="-1"
-      on:click={(e) => e.stopPropagation()}
-      on:keydown={(e) => e.stopPropagation()}
+      onclick={(e) => e.stopPropagation()}
+      onkeydown={(e) => e.stopPropagation()}
     >
       <h3>Delete Backup?</h3>
       <p>Are you sure you want to delete this backup?</p>
@@ -195,7 +201,7 @@
       <div class="modal-actions">
         <button
           class="cancel-btn"
-          on:click={cancelDelete}
+          onclick={cancelDelete}
           type="button"
           disabled={deleting}
         >
@@ -203,7 +209,7 @@
         </button>
         <button
           class="confirm-delete-btn"
-          on:click={confirmDelete}
+          onclick={confirmDelete}
           type="button"
           disabled={deleting}
         >

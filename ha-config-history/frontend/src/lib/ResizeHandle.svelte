@@ -1,13 +1,17 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
 
-  export let vertical = true;
+  type Props = {
+    vertical?: boolean;
+  };
+
+  let { vertical }: Props = $props();
 
   const dispatch = createEventDispatcher<{
     resize: { deltaX: number; deltaY: number };
   }>();
 
-  let isDragging = false;
+  let isDragging = $state(false);
   let startX = 0;
   let startY = 0;
 
@@ -51,7 +55,7 @@
   class:vertical
   class:horizontal={!vertical}
   class:dragging={isDragging}
-  on:mousedown={handleMouseDown}
+  onmousedown={handleMouseDown}
   role="separator"
   aria-label="Resize {vertical ? 'column' : 'row'}"
   aria-orientation={vertical ? "vertical" : "horizontal"}

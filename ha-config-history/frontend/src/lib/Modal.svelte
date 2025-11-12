@@ -1,10 +1,17 @@
 <script lang="ts">
-  export let isOpen = false;
-  export let title = '';
-  export let onClose: () => void = () => {};
+  import type { Snippet } from "svelte";
+
+  type Props = {
+    isOpen: boolean;
+    title: string;
+    onClose: () => void;
+    children: Snippet;
+  };
+
+  let { isOpen, title, onClose, children }: Props = $props();
 
   function handleKeydown(event: KeyboardEvent) {
-    if (event.key === 'Escape') {
+    if (event.key === "Escape") {
       onClose();
     }
   }
@@ -17,10 +24,10 @@
 </script>
 
 {#if isOpen}
-  <div 
-    class="modal-backdrop" 
-    on:click={handleBackdropClick}
-    on:keydown={handleKeydown}
+  <div
+    class="modal-backdrop"
+    onclick={handleBackdropClick}
+    onkeydown={handleKeydown}
     tabindex="0"
     role="dialog"
     aria-modal="true"
@@ -29,18 +36,18 @@
     <div class="modal-content">
       <div class="modal-header">
         <h2 id="modal-title">{title}</h2>
-        <button 
-          class="close-btn" 
-          on:click={onClose}
+        <button
+          class="close-btn"
+          onclick={onClose}
           type="button"
           aria-label="Close modal"
         >
           ×
         </button>
       </div>
-      
+
       <div class="modal-body">
-        <slot />
+        {@render children()}
       </div>
     </div>
   </div>

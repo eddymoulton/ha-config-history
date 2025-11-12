@@ -5,27 +5,35 @@
   import { formatFileSize } from "./utils";
   import LoadingState from "./LoadingState.svelte";
 
-  export let onConfigClick: (config: ConfigMetadata) => void;
-  export let selectedConfig: ConfigMetadata | null = null;
+  type ConfigListProps = {
+    onConfigClick: (config: ConfigMetadata) => void;
+    selectedConfig: ConfigMetadata | null;
+  };
 
-  let configs: ConfigMetadata[] = [];
-  let loading = true;
-  let error: string | null = null;
-  let selectedGroup: string = "all";
-  let searchQuery: string = "";
-  let configToDelete: ConfigMetadata | null = null;
-  let showDeleteConfirm = false;
-  let deleting = false;
+  let { onConfigClick, selectedConfig }: ConfigListProps = $props();
 
-  $: groups = Array.from(new Set(configs.map((c) => c.group))).sort();
-  $: filteredConfigs = configs
-    .filter((c) => selectedGroup === "all" || c.group === selectedGroup)
-    .filter(
-      (c) =>
-        searchQuery === "" ||
-        c.friendlyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        c.id.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+  let configs: ConfigMetadata[] = $state([]);
+  let loading = $state(false);
+  let error: string | null = $state(null);
+  let selectedGroup: string = $state("all");
+  let searchQuery: string = $state("");
+  let configToDelete: ConfigMetadata | null = $state(null);
+  let showDeleteConfirm = $state(false);
+  let deleting = $state(false);
+
+  let groups = $derived(
+    Array.from(new Set(configs.map((c) => c.group))).sort()
+  );
+  let filteredConfigs = $derived(
+    configs
+      .filter((c) => selectedGroup === "all" || c.group === selectedGroup)
+      .filter(
+        (c) =>
+          searchQuery === "" ||
+          c.friendlyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          c.id.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+  );
 
   async function loadConfigs() {
     loading = true;
@@ -104,7 +112,7 @@
         </select>
         <button
           class="refresh-btn"
-          on:click={loadConfigs}
+          onclick={loadConfigs}
           type="button"
           title="Refresh configs"
           aria-label="Refresh configs"
@@ -136,8 +144,8 @@
             class="automation-card {selectedConfig?.id === config.id
               ? 'selected'
               : ''}"
-            on:click={() => onConfigClick(config)}
-            on:keydown={(e) => e.key === "Enter" && onConfigClick(config)}
+            onclick={() => onConfigClick(config)}
+            onkeydown={(e) => e.key === "Enter" && onConfigClick(config)}
             tabindex="0"
             role="button"
           >
@@ -145,7 +153,7 @@
               <div class="automation-title">{config.friendlyName}</div>
               <button
                 class="delete-btn"
-                on:click={(e) => handleDeleteClick(config, e)}
+                onclick={(e) => handleDeleteClick(config, e)}
                 type="button"
                 title="Delete all backups"
                 aria-label="Delete all backups"
@@ -176,14 +184,14 @@
 {#if showDeleteConfirm}
   <div
     class="modal-overlay"
-    on:click={cancelDelete}
-    on:keydown={(e) => e.key === "Escape" && cancelDelete()}
+    onclick={cancelDelete}
+    onkeydown={(e) => e.key === "Escape" && cancelDelete()}
     role="presentation"
   >
     <div
       class="modal-content"
-      on:click={(e) => e.stopPropagation()}
-      on:keydown={(e) => e.stopPropagation()}
+      onclick={(e) => e.stopPropagation()}
+      onkeydown={(e) => e.stopPropagation()}
       role="dialog"
       aria-modal="true"
       aria-labelledby="delete-modal-title"
@@ -204,7 +212,7 @@
       <div class="modal-actions">
         <button
           class="cancel-btn"
-          on:click={cancelDelete}
+          onclick={cancelDelete}
           type="button"
           disabled={deleting}
         >
@@ -212,7 +220,7 @@
         </button>
         <button
           class="confirm-delete-btn"
-          on:click={confirmDelete}
+          onclick={confirmDelete}
           type="button"
           disabled={deleting}
         >

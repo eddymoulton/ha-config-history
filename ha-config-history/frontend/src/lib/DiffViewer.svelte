@@ -11,29 +11,35 @@
   import { formatRelativeTime } from "./utils";
   import LoadingState from "./LoadingState.svelte";
 
-  export let config: ConfigMetadata | null = null;
-  export let selectedBackup: BackupInfo | null = null;
-  export let allBackups: BackupInfo[] = [];
-  export let onBack: (() => void) | undefined = undefined;
+  type DiffViewerProps = {
+    config: ConfigMetadata | null;
+    selectedBackup: BackupInfo | null;
+    allBackups: BackupInfo[];
+    onBack?: () => void;
+  };
 
-  let comparisonMode: ComparisonMode = "current";
-  let secondBackup: BackupInfo | null = null;
-  let secondBackupFilename: string | null = null;
-  let diffData: BackupDiffResponse | null = null;
-  let loading = false;
-  let error: string | null = null;
-  let restoringBackup: string | null = null;
-  let restoreSuccess: string | null = null;
-  let isMobile = false;
+  let {
+    config = null,
+    selectedBackup = null,
+    allBackups = [],
+    onBack = undefined,
+  }: DiffViewerProps = $props();
 
-  $: {
-    if (secondBackupFilename) {
-      secondBackup =
-        allBackups.find((b) => b.filename === secondBackupFilename) || null;
-    } else {
-      secondBackup = null;
-    }
-  }
+  let comparisonMode: ComparisonMode = $state("current");
+  let secondBackupFilename: string | null = $state(null);
+  let diffData: BackupDiffResponse | null = $state(null);
+  let loading = $state(false);
+  let error: string | null = $state(null);
+  let restoringBackup: string | null = $state(null);
+  let restoreSuccess: string | null = $state(null);
+  let isMobile = $state(false);
+
+  let currentBackup = $derived(allBackups.length > 0 ? allBackups[0] : null);
+  let secondBackup: BackupInfo | null = $derived(
+    secondBackupFilename
+      ? allBackups.find((b) => b.filename === secondBackupFilename) || null
+      : null
+  );
 
   function checkMobile() {
     isMobile = window.innerWidth <= 1024;
@@ -45,11 +51,9 @@
     return () => window.removeEventListener("resize", checkMobile);
   });
 
-  $: if (config && selectedBackup) {
+  $effect(() => {
     loadDiff();
-  }
-
-  $: currentBackup = allBackups.length > 0 ? allBackups[0] : null;
+  });
 
   async function loadDiff() {
     if (!config || !selectedBackup) return;
@@ -220,7 +224,7 @@
     {#if onBack && isMobile}
       <button
         class="back-btn"
-        on:click={onBack}
+        onclick={onBack}
         type="button"
         aria-label="Back to backups"
       >
@@ -231,7 +235,7 @@
       <h2>{selectedBackup ? selectedBackup.filename : "Select a backup"}</h2>
       <button
         class="restore-btn"
-        on:click={handleRestore}
+        onclick={handleRestore}
         type="button"
         disabled={selectedBackup?.filename === currentBackup?.filename}
         title={selectedBackup?.filename === currentBackup?.filename
@@ -245,21 +249,21 @@
       <div class="comparison-modes">
         <button
           class="mode-btn {comparisonMode === 'current' ? 'active' : ''}"
-          on:click={() => handleComparisonModeChange("current")}
+          onclick={() => handleComparisonModeChange("current")}
           type="button"
         >
           vs Current
         </button>
         <button
           class="mode-btn {comparisonMode === 'previous' ? 'active' : ''}"
-          on:click={() => handleComparisonModeChange("previous")}
+          onclick={() => handleComparisonModeChange("previous")}
           type="button"
         >
           vs Previous
         </button>
         <button
           class="mode-btn {comparisonMode === 'two-backups' ? 'active' : ''}"
-          on:click={() => handleComparisonModeChange("two-backups")}
+          onclick={() => handleComparisonModeChange("two-backups")}
           type="button"
         >
           Compare Two
@@ -272,7 +276,7 @@
           <select
             id="second-backup"
             bind:value={secondBackupFilename}
-            on:change={loadDiff}
+            onchange={loadDiff}
           >
             <option value={null}>Select backup...</option>
             {#each allBackups as backup (backup.filename)}
