@@ -155,7 +155,7 @@
             role="button"
           >
             <div class="automation-header">
-              <h3 class="automation-title">{config.friendlyName}</h3>
+              <div class="automation-title">{config.friendlyName}</div>
               <button
                 class="delete-btn"
                 on:click={(e) => handleDeleteClick(config, e)}
@@ -361,7 +361,7 @@
   }
 
   .automation-header {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -370,9 +370,9 @@
 
   .automation-title {
     color: var(--primary-text-color, #ffffff);
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 500;
-    margin: 0 0 0.5rem 0;
+    margin: 0;
     line-height: 1.3;
     flex: 1;
   }
@@ -401,25 +401,25 @@
 
   .automation-stats {
     display: flex;
-    gap: 1rem;
+    gap: 2rem;
   }
 
   .stat {
     display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+    flex-direction: row;
+    gap: 0.5rem;
   }
 
   .stat-label {
     color: var(--secondary-text-color, #9b9b9b);
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   .stat-value {
     color: var(--primary-text-color, #ffffff);
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 400;
   }
 
