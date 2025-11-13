@@ -8,6 +8,7 @@
     RestoreBackupResponse,
   } from "./types";
   import { api } from "./api";
+  import Button from "./components/Button.svelte";
   import { formatRelativeTime } from "./utils";
   import LoadingState from "./LoadingState.svelte";
 
@@ -222,19 +223,22 @@
 <div class="diff-viewer-container">
   <div class="header">
     {#if onBack && isMobile}
-      <button
-        class="back-btn"
+      <Button
+        variant="outlined"
+        size="small"
         onclick={onBack}
         type="button"
         aria-label="Back to backups"
+        icon="←"
       >
-        ← Back
-      </button>
+        Back
+      </Button>
     {/if}
     <div class="title-container">
       <h2>{selectedBackup ? selectedBackup.filename : "Select a backup"}</h2>
-      <button
-        class="restore-btn"
+      <Button
+        variant="success"
+        size="small"
         onclick={handleRestore}
         type="button"
         disabled={selectedBackup?.filename === currentBackup?.filename}
@@ -243,31 +247,34 @@
           : "Restore this backup"}
       >
         Restore
-      </button>
+      </Button>
     </div>
     <div class="diff-controls">
       <div class="comparison-modes">
-        <button
-          class="mode-btn {comparisonMode === 'current' ? 'active' : ''}"
+        <Button
+          variant={comparisonMode === 'current' ? 'primary' : 'secondary'}
+          size="small"
           onclick={() => handleComparisonModeChange("current")}
           type="button"
         >
           vs Current
-        </button>
-        <button
-          class="mode-btn {comparisonMode === 'previous' ? 'active' : ''}"
+        </Button>
+        <Button
+          variant={comparisonMode === 'previous' ? 'primary' : 'secondary'}
+          size="small"
           onclick={() => handleComparisonModeChange("previous")}
           type="button"
         >
           vs Previous
-        </button>
-        <button
-          class="mode-btn {comparisonMode === 'two-backups' ? 'active' : ''}"
+        </Button>
+        <Button
+          variant={comparisonMode === 'two-backups' ? 'primary' : 'secondary'}
+          size="small"
           onclick={() => handleComparisonModeChange("two-backups")}
           type="button"
         >
           Compare Two
-        </button>
+        </Button>
       </div>
 
       {#if comparisonMode === "two-backups"}
@@ -386,22 +393,6 @@
     min-height: 140px;
   }
 
-  .back-btn {
-    background: transparent;
-    color: var(--primary-color, #03a9f4);
-    border: 1px solid var(--primary-color, #03a9f4);
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: all 0.2s;
-  }
-
-  .back-btn:hover {
-    background: var(--primary-color, #03a9f4);
-    color: white;
-  }
-
   .header h2 {
     margin: 0;
     color: var(--primary-text-color, #ffffff);
@@ -437,24 +428,6 @@
     flex-wrap: wrap;
   }
 
-  .mode-btn {
-    background: var(--ha-card-background, #2c2c2e);
-    color: var(--secondary-text-color, #9b9b9b);
-    border: 1px solid var(--ha-card-border-color, #3c3c3e);
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: all 0.2s;
-  }
-
-  .mode-btn:hover,
-  .mode-btn.active {
-    background: var(--primary-color, #03a9f4);
-    color: white;
-    border-color: var(--primary-color, #03a9f4);
-  }
-
   .backup-selector {
     display: flex;
     align-items: center;
@@ -473,22 +446,6 @@
     padding: 0.5rem;
     border-radius: 4px;
     font-size: 0.9rem;
-  }
-
-  .restore-btn {
-    background: var(--success-color, #4caf50);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: background-color 0.2s;
-  }
-
-  .restore-btn:hover {
-    background: var(--success-color-dark, #45a049);
   }
 
   .alert {

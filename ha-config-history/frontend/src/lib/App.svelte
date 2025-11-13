@@ -5,6 +5,7 @@
   import DiffViewer from "./DiffViewer.svelte";
   import SettingsModal from "./SettingsModal.svelte";
   import ResizeHandle from "./ResizeHandle.svelte";
+  import Button from "./components/Button.svelte";
   import type { ConfigMetadata, BackupInfo } from "./types";
 
   let selectedConfig: ConfigMetadata | null = $state(null);
@@ -80,9 +81,9 @@
 <main class="app">
   <header class="app-header">
     <h1>Home Assistant Config History</h1>
-    <button class="settings-btn" type="button" onclick={handleOpenSettings}>
+    <Button variant="primary" size="small" type="button" onclick={handleOpenSettings}>
       Settings
-    </button>
+    </Button>
   </header>
 
   <div
@@ -222,41 +223,6 @@
     margin-top: 1.5rem;
   }
 
-  :global(.cancel-btn),
-  :global(.confirm-delete-btn) {
-    padding: 0.6rem 1.2rem;
-    border-radius: 4px;
-    border: none;
-    cursor: pointer;
-    font-size: 0.95rem;
-    font-weight: 500;
-    transition: all 0.2s;
-  }
-
-  :global(.cancel-btn) {
-    background: var(--ha-card-border-color, #2c2c2e);
-    color: var(--primary-text-color, #ffffff);
-  }
-
-  :global(.cancel-btn:hover:not(:disabled)) {
-    background: var(--ha-card-border-color, #3c3c3e);
-  }
-
-  :global(.confirm-delete-btn) {
-    background: var(--error-color, #f44336);
-    color: white;
-  }
-
-  :global(.confirm-delete-btn:hover:not(:disabled)) {
-    background: #d32f2f;
-  }
-
-  :global(.cancel-btn:disabled),
-  :global(.confirm-delete-btn:disabled) {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
   .app {
     min-height: 100vh;
     display: flex;
@@ -282,22 +248,6 @@
     font-size: 1.5rem;
     margin: 0;
     font-weight: 500;
-  }
-
-  .settings-btn {
-    background: var(--primary-color, #03a9f4);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: background-color 0.2s;
-  }
-
-  .settings-btn:hover {
-    background: var(--primary-color-dark, #0288d1);
   }
 
   .three-column-layout {

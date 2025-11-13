@@ -4,6 +4,8 @@
   import { api } from "./api";
   import { formatFileSize } from "./utils";
   import LoadingState from "./LoadingState.svelte";
+  import Button from "./components/Button.svelte";
+  import IconButton from "./components/IconButton.svelte";
 
   type ConfigListProps = {
     onConfigClick: (config: ConfigMetadata) => void;
@@ -110,15 +112,17 @@
             <option value={group}>{group}</option>
           {/each}
         </select>
-        <button
-          class="refresh-btn"
+        <Button
+          variant="outlined"
+          size="small"
           onclick={loadConfigs}
           type="button"
           title="Refresh configs"
           aria-label="Refresh configs"
+          icon="⟳"
         >
-          ⟳
-        </button>
+          Refresh
+        </Button>
       </div>
       <div class="search-box">
         <input
@@ -151,15 +155,16 @@
           >
             <div class="automation-header">
               <div class="automation-title">{config.friendlyName}</div>
-              <button
-                class="delete-btn"
+              <IconButton
+                icon="🗑️"
+                variant="ghost"
+                size="small"
+                class="btn-danger"
                 onclick={(e) => handleDeleteClick(config, e)}
                 type="button"
                 title="Delete all backups"
                 aria-label="Delete all backups"
-              >
-                🗑️
-              </button>
+              />
             </div>
 
             <div class="automation-stats">
@@ -210,22 +215,23 @@
         </p>
       {/if}
       <div class="modal-actions">
-        <button
-          class="cancel-btn"
+        <Button
+          variant="secondary"
           onclick={cancelDelete}
           type="button"
           disabled={deleting}
         >
           Cancel
-        </button>
-        <button
-          class="confirm-delete-btn"
+        </Button>
+        <Button
+          variant="danger"
           onclick={confirmDelete}
           type="button"
           disabled={deleting}
+          loading={deleting}
         >
           {deleting ? "Deleting..." : "Delete All"}
-        </button>
+        </Button>
       </div>
     </div>
   </div>
@@ -279,25 +285,6 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-  }
-
-  .refresh-btn {
-    background: transparent;
-    color: var(--primary-color, #03a9f4);
-    border: 1px solid var(--primary-color, #03a9f4);
-    padding: 0.4rem 0.8rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1.2rem;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .refresh-btn:hover {
-    background: var(--primary-color, #03a9f4);
-    color: white;
   }
 
   .group-select {
@@ -370,28 +357,6 @@
     margin: 0;
     line-height: 1.3;
     flex: 1;
-  }
-
-  .delete-btn {
-    background: transparent;
-    border: none;
-    color: var(--error-color, #f44336);
-    cursor: pointer;
-    font-size: 1.1rem;
-    padding: 0.25rem;
-    border-radius: 4px;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.7;
-    flex-shrink: 0;
-  }
-
-  .delete-btn:hover {
-    opacity: 1;
-    background: rgba(244, 67, 54, 0.1);
-    transform: scale(1.1);
   }
 
   .automation-stats {

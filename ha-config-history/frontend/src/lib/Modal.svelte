@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
+  import IconButton from "./components/IconButton.svelte";
 
   type Props = {
     isOpen: boolean;
@@ -36,14 +37,14 @@
     <div class="modal-content">
       <div class="modal-header">
         <h2 id="modal-title">{title}</h2>
-        <button
-          class="close-btn"
+        <IconButton
+          icon="×"
+          variant="ghost"
+          size="large"
           onclick={onClose}
           type="button"
           aria-label="Close modal"
-        >
-          ×
-        </button>
+        />
       </div>
 
       <div class="modal-body">
@@ -94,27 +95,6 @@
     font-size: 1.5rem;
     font-weight: 500;
     margin: 0;
-  }
-
-  .close-btn {
-    background: none;
-    border: none;
-    color: var(--secondary-text-color, #9b9b9b);
-    font-size: 2rem;
-    cursor: pointer;
-    padding: 0;
-    width: 2rem;
-    height: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    transition: all 0.2s;
-  }
-
-  .close-btn:hover {
-    background: var(--ha-card-border-color, #2c2c2e);
-    color: var(--primary-text-color, #ffffff);
   }
 
   .modal-body {

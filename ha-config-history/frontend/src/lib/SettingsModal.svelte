@@ -6,6 +6,8 @@
     UpdateSettingsResponse,
   } from "./types";
   import { api } from "./api";
+  import IconButton from "./components/IconButton.svelte";
+  import Button from "./components/Button.svelte";
 
   type Props = {
     isOpen: boolean;
@@ -248,7 +250,7 @@
               <li>{warning}</li>
             {/each}
           </ul>
-          <button class="btn-small" onclick={onClose}>Close Anyway</button>
+          <Button size="small" variant="primary" onclick={onClose}>Close Anyway</Button>
         </div>
       {/if}
 
@@ -354,14 +356,17 @@
             </div>
 
             <div class="backup-action">
-              <button
-                class="btn-backup"
+              <Button
+                variant="success"
+                size="large"
                 type="button"
                 onclick={handleBackupNow}
                 disabled={backingUp}
+                loading={backingUp}
+                icon={backingUp ? undefined : "⚡"}
               >
-                {backingUp ? "Running Backup..." : "⚡ Backup Now"}
-              </button>
+                {backingUp ? "Running Backup..." : "Backup Now"}
+              </Button>
               <span class="backup-help"
                 >Manually trigger a backup of all configured files</span
               >
@@ -384,9 +389,9 @@
             >
             Config Backup Options
           </div>
-          <button class="btn-add" type="button" onclick={addConfig}
-            >+ Add Config</button
-          >
+          <Button variant="primary" size="small" type="button" onclick={addConfig} icon="+">
+            Add Config
+          </Button>
         </div>
 
         {#if openSection === "configs"}
@@ -406,32 +411,36 @@
                         <span class="config-type">{config.backupType}</span>
                       </div>
                       <div class="config-actions">
-                        <button
-                          class="btn-icon"
+                        <IconButton
+                          icon={editingConfigIndex === index ? "▼" : "▶"}
+                          variant="outlined"
+                          size="medium"
                           type="button"
                           onclick={() =>
                             (editingConfigIndex =
                               editingConfigIndex === index ? null : index)}
                           title="Edit"
-                        >
-                          {editingConfigIndex === index ? "▼" : "▶"}
-                        </button>
-                        <button
-                          class="btn-icon"
+                          aria-label="Edit"
+                        />
+                        <IconButton
+                          icon="⧉"
+                          variant="outlined"
+                          size="medium"
                           type="button"
                           onclick={() => duplicateConfig(index)}
                           title="Duplicate"
-                        >
-                          ⧉
-                        </button>
-                        <button
-                          class="btn-icon btn-danger"
+                          aria-label="Duplicate"
+                        />
+                        <IconButton
+                          icon="×"
+                          variant="outlined"
+                          size="medium"
+                          class="btn-danger"
                           type="button"
                           onclick={() => removeConfig(index)}
                           title="Remove"
-                        >
-                          ×
-                        </button>
+                          aria-label="Remove"
+                        />
                       </div>
                     </div>
 
@@ -581,22 +590,23 @@
       </section>
 
       <div class="modal-actions">
-        <button
-          class="btn btn-secondary"
+        <Button
+          variant="secondary"
           type="button"
           onclick={onClose}
           disabled={saving}
         >
           Cancel
-        </button>
-        <button
-          class="btn btn-primary"
+        </Button>
+        <Button
+          variant="success"
           type="button"
           onclick={handleSave}
           disabled={saving}
+          loading={saving}
         >
           {saving ? "Saving..." : "Save Settings"}
-        </button>
+        </Button>
       </div>
     </div>
   {/if}
@@ -735,22 +745,6 @@
     gap: 1rem;
   }
 
-  .btn-add {
-    background: var(--primary-color, #03a9f4);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: background-color 0.2s;
-  }
-
-  .btn-add:hover {
-    background: var(--primary-color-dark, #0288d1);
-  }
-
   .backup-action {
     margin-top: 1.5rem;
     padding-top: 1.5rem;
@@ -760,50 +754,10 @@
     gap: 0.5rem;
   }
 
-  .btn-backup {
-    background: var(--success-color, #4caf50);
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
-    transition: all 0.2s;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    align-self: flex-start;
-  }
-
-  .btn-backup:hover:not(:disabled) {
-    background: var(--success-color-dark, #45a049);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
-  }
-
-  .btn-backup:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-  }
-
   .backup-help {
     color: var(--secondary-text-color, #9b9b9b);
     font-size: 0.85rem;
     font-style: italic;
-  }
-
-  .btn-small {
-    background: var(--primary-color, #03a9f4);
-    color: white;
-    border: none;
-    padding: 0.4rem 0.8rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    margin-top: 0.5rem;
   }
 
   .empty-state {
@@ -853,34 +807,6 @@
     gap: 0.5rem;
   }
 
-  .btn-icon {
-    background: transparent;
-    border: 1px solid var(--ha-card-border-color, #3c3c3e);
-    color: var(--primary-text-color, #ffffff);
-    width: 2rem;
-    height: 2rem;
-    border-radius: 4px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    transition: all 0.2s;
-  }
-
-  .btn-icon:hover {
-    background: var(--ha-card-border-color, #3c3c3e);
-  }
-
-  .btn-icon.btn-danger {
-    color: var(--error-color, #f44336);
-    border-color: var(--error-color, #f44336);
-  }
-
-  .btn-icon.btn-danger:hover {
-    background: rgba(244, 67, 54, 0.1);
-  }
-
   .config-details {
     margin-top: 1rem;
     padding-top: 1rem;
@@ -893,39 +819,6 @@
     gap: 1rem;
     padding-top: 1rem;
     border-top: 1px solid var(--ha-card-border-color, #2c2c2e);
-  }
-
-  .btn {
-    padding: 0.6rem 1.5rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
-    border: none;
-    transition: background-color 0.2s;
-  }
-
-  .btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .btn-secondary {
-    background: var(--ha-card-border-color, #3c3c3e);
-    color: var(--primary-text-color, #ffffff);
-  }
-
-  .btn-secondary:hover:not(:disabled) {
-    background: var(--ha-card-border-color, #4c4c4e);
-  }
-
-  .btn-primary {
-    background: var(--success-color, #4caf50);
-    color: white;
-  }
-
-  .btn-primary:hover:not(:disabled) {
-    background: var(--success-color-dark, #45a049);
   }
 
   @media (max-width: 768px) {

@@ -4,6 +4,8 @@
   import { api } from "./api";
   import { formatFileSize, formatRelativeTime } from "./utils";
   import LoadingState from "./LoadingState.svelte";
+  import Button from "./components/Button.svelte";
+  import IconButton from "./components/IconButton.svelte";
 
   type Props = {
     config: ConfigMetadata | null;
@@ -95,26 +97,30 @@
   <div class="header">
     <div class="header-row">
       {#if onBack && isMobile}
-        <button
-          class="back-btn"
+        <Button
+          variant="outlined"
+          size="small"
           onclick={onBack}
           type="button"
           aria-label="Back to configs"
+          icon="←"
         >
-          ← Back
-        </button>
+          Back
+        </Button>
       {/if}
       <h2>{config ? config.friendlyName : "Select an config"}</h2>
       {#if config}
-        <button
-          class="refresh-btn"
+        <Button
+          variant="outlined"
+          size="small"
           onclick={loadBackups}
           type="button"
           title="Refresh backups"
           aria-label="Refresh backups"
+          icon="⟳"
         >
-          ⟳
-        </button>
+          Refresh
+        </Button>
       {/if}
     </div>
     <div>
@@ -154,15 +160,16 @@
             </div>
             <div class="backup-actions">
               <div class="backup-size">{formatFileSize(backup.size)}</div>
-              <button
-                class="delete-btn"
+              <IconButton
+                icon="🗑️"
+                variant="ghost"
+                size="small"
+                class="btn-danger"
                 onclick={(e) => handleDeleteClick(backup, e)}
                 type="button"
                 title="Delete backup"
                 aria-label="Delete backup"
-              >
-                🗑️
-              </button>
+              />
             </div>
           </div>
 
@@ -199,22 +206,23 @@
         <p class="backup-info">{backupToDelete.filename}</p>
       {/if}
       <div class="modal-actions">
-        <button
-          class="cancel-btn"
+        <Button
+          variant="secondary"
           onclick={cancelDelete}
           type="button"
           disabled={deleting}
         >
           Cancel
-        </button>
-        <button
-          class="confirm-delete-btn"
+        </Button>
+        <Button
+          variant="danger"
           onclick={confirmDelete}
           type="button"
           disabled={deleting}
+          loading={deleting}
         >
           {deleting ? "Deleting..." : "Delete"}
-        </button>
+        </Button>
       </div>
     </div>
   </div>
@@ -245,48 +253,12 @@
     gap: 1rem;
   }
 
-  .back-btn {
-    background: transparent;
-    color: var(--primary-color, #03a9f4);
-    border: 1px solid var(--primary-color, #03a9f4);
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: all 0.2s;
-  }
-
-  .back-btn:hover {
-    background: var(--primary-color, #03a9f4);
-    color: white;
-  }
-
   .header h2 {
     margin: 0;
     color: var(--primary-text-color, #ffffff);
     font-size: 1.2rem;
     font-weight: 500;
     flex: 1;
-  }
-
-  .refresh-btn {
-    background: transparent;
-    color: var(--primary-color, #03a9f4);
-    border: 1px solid var(--primary-color, #03a9f4);
-    padding: 0.4rem 0.8rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1.2rem;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .refresh-btn:hover {
-    background: var(--primary-color, #03a9f4);
-    color: white;
   }
 
   .backup-list {
@@ -373,27 +345,6 @@
     font-weight: 500;
     min-width: 50px;
     text-align: right;
-  }
-
-  .delete-btn {
-    background: transparent;
-    border: none;
-    color: var(--error-color, #f44336);
-    cursor: pointer;
-    font-size: 1.1rem;
-    padding: 0.25rem;
-    border-radius: 4px;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.7;
-  }
-
-  .delete-btn:hover {
-    opacity: 1;
-    background: rgba(244, 67, 54, 0.1);
-    transform: scale(1.1);
   }
 
   .backup-date {
