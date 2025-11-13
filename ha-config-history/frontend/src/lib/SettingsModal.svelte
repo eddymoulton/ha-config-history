@@ -8,6 +8,9 @@
   import { api } from "./api";
   import IconButton from "./components/IconButton.svelte";
   import Button from "./components/Button.svelte";
+  import FormGroup from "./components/FormGroup.svelte";
+  import FormInput from "./components/FormInput.svelte";
+  import FormSelect from "./components/FormSelect.svelte";
 
   type Props = {
     isOpen: boolean;
@@ -270,89 +273,93 @@
 
         {#if openSection === "general"}
           <div class="section-content">
-            <div class="form-group">
-              <label for="ha-config-dir">Home Assistant Config Directory</label>
-              <input
+            <FormGroup
+              label="Home Assistant Config Directory"
+              for="ha-config-dir"
+            >
+              <FormInput
                 id="ha-config-dir"
                 type="text"
                 bind:value={settings.homeAssistantConfigDir}
                 placeholder="/config"
-                class:changed={hasChanged(
+                changed={hasChanged(
                   "homeAssistantConfigDir",
                   settings.homeAssistantConfigDir
                 )}
               />
-            </div>
+            </FormGroup>
 
-            <div class="form-group">
-              <label for="backup-dir">Backup Directory</label>
-              <input
+            <FormGroup
+              label="Backup Directory"
+              for="backup-dir"
+            >
+              <FormInput
                 id="backup-dir"
                 type="text"
                 bind:value={settings.backupDir}
                 placeholder="./backups"
-                class:changed={hasChanged("backupDir", settings.backupDir)}
+                changed={hasChanged("backupDir", settings.backupDir)}
               />
-            </div>
+            </FormGroup>
 
-            <div class="form-group">
-              <label for="port">Server Port</label>
-              <input
+            <FormGroup
+              label="Server Port"
+              for="port"
+            >
+              <FormInput
                 id="port"
                 type="text"
                 bind:value={settings.port}
                 placeholder=":40613"
-                class:changed={hasChanged("port", settings.port)}
+                changed={hasChanged("port", settings.port)}
               />
-            </div>
+            </FormGroup>
 
-            <div class="form-group">
-              <label for="cron-schedule">
-                Cron Schedule
-                <span class="help-text"
-                  >(Leave empty to disable, e.g., "0 2 * * *" for daily at 2 AM)</span
-                >
-              </label>
-              <input
+            <FormGroup
+              label="Cron Schedule"
+              for="cron-schedule"
+              helpText="(Leave empty to disable, e.g., &quot;0 2 * * *&quot; for daily at 2 AM)"
+            >
+              <FormInput
                 id="cron-schedule"
                 type="text"
                 bind:value={settings.cronSchedule}
                 placeholder="0 2 * * *"
-                class:changed={hasChanged(
+                changed={hasChanged(
                   "cronSchedule",
                   settings.cronSchedule
                 )}
               />
-            </div>
+            </FormGroup>
 
             <div class="form-row">
-              <div class="form-group">
-                <label for="max-backups">
-                  Default Max Backups
-                  <span class="help-text">(Leave empty for unlimited)</span>
-                </label>
-                <input
+              <FormGroup
+                label="Default Max Backups"
+                for="max-backups"
+                helpText="(Leave empty for unlimited)"
+              >
+                <FormInput
                   id="max-backups"
                   type="number"
                   bind:value={settings.defaultMaxBackups}
                   placeholder="unlimited"
                   min="1"
                 />
-              </div>
+              </FormGroup>
 
-              <div class="form-group">
-                <label for="max-age">
-                  Default Max Age (Days)
-                  <span class="help-text">(Leave empty for unlimited)</span>
-                </label>
-                <input
+              <FormGroup
+                label="Default Max Age (Days)"
+                for="max-age"
+                helpText="(Leave empty for unlimited)"
+              >
+                <FormInput
                   id="max-age"
                   type="number"
                   bind:value={settings.defaultMaxBackupAgeDays}
                   placeholder="unlimited"
                   min="1"
                 />
-              </div>
+              </FormGroup>
             </div>
 
             <div class="backup-action">
@@ -722,22 +729,6 @@
     font-weight: 400;
   }
 
-  .form-group input,
-  .form-group select {
-    width: 100%;
-    padding: 0.6rem;
-    background: var(--ha-card-background, #2c2c2e);
-    border: 1px solid var(--ha-card-border-color, #3c3c3e);
-    border-radius: 4px;
-    color: var(--primary-text-color, #ffffff);
-    font-size: 0.9rem;
-  }
-
-  .form-group input:focus,
-  .form-group select:focus {
-    outline: none;
-    border-color: var(--primary-color, #03a9f4);
-  }
 
   .form-row {
     display: grid;

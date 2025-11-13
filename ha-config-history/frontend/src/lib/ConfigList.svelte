@@ -11,6 +11,8 @@
   import ListContent from "./components/ListContent.svelte";
   import ListItem from "./components/ListItem.svelte";
   import ConfirmationModal from "./components/ConfirmationModal.svelte";
+  import FormInput from "./components/FormInput.svelte";
+  import FormSelect from "./components/FormSelect.svelte";
 
   type ConfigListProps = {
     onConfigClick: (config: ConfigMetadata) => void;
@@ -108,15 +110,17 @@
 
     {#if !loading && !error && configs.length > 0}
       <div class="group-filter-row">
-        <select
+        <FormSelect
           id="group-filter"
           bind:value={selectedGroup}
           class="group-select"
         >
-          {#each groups as group}
-            <option value={group}>{group}</option>
-          {/each}
-        </select>
+          {#snippet children()}
+            {#each groups as group}
+              <option value={group}>{group}</option>
+            {/each}
+          {/snippet}
+        </FormSelect>
         <Button
           variant="outlined"
           size="small"
@@ -130,7 +134,7 @@
         </Button>
       </div>
       <div class="search-box">
-        <input
+        <FormInput
           type="text"
           placeholder="Search configs..."
           bind:value={searchQuery}
@@ -217,20 +221,6 @@
     justify-content: space-between;
   }
 
-  .search-input {
-    width: 80%;
-    padding: 0.6rem;
-    background: var(--ha-card-background, #2c2c2e);
-    border: 1px solid var(--ha-card-border-color, #3c3c3e);
-    border-radius: 4px;
-    color: var(--primary-text-color, #ffffff);
-    font-size: 0.9rem;
-  }
-
-  .search-input:focus {
-    outline: none;
-    border-color: var(--primary-color, #03a9f4);
-  }
 
   .group-filter-row {
     display: flex;
@@ -238,21 +228,6 @@
     gap: 0.75rem;
   }
 
-  .group-select {
-    flex: 1;
-    padding: 0.5rem;
-    background: var(--ha-card-background, #2c2c2e);
-    border: 1px solid var(--ha-card-border-color, #3c3c3e);
-    border-radius: 4px;
-    color: var(--primary-text-color, #ffffff);
-    font-size: 0.9rem;
-    cursor: pointer;
-  }
-
-  .group-select:focus {
-    outline: none;
-    border-color: var(--primary-color, #03a9f4);
-  }
 
   .filter-count {
     color: var(--secondary-text-color, #9b9b9b);
