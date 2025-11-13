@@ -11,6 +11,7 @@
   import FormGroup from "./components/FormGroup.svelte";
   import FormInput from "./components/FormInput.svelte";
   import FormSelect from "./components/FormSelect.svelte";
+  import Alert from "./components/Alert.svelte";
 
   type Props = {
     isOpen: boolean;
@@ -237,16 +238,14 @@
     <div class="loading">Loading settings...</div>
   {:else if settings}
     <div class="settings-form">
-      {#if error}
-        <div class="alert alert-error">{error}</div>
-      {/if}
+      <Alert type="error" message={error} />
 
       {#if backupSuccess}
-        <div class="alert alert-success">Backup completed successfully!</div>
+        <Alert type="success" message="Backup completed successfully!" />
       {/if}
 
       {#if warnings.length > 0}
-        <div class="alert alert-warning">
+        <Alert type="warning">
           <strong>Warnings:</strong>
           <ul>
             {#each warnings as warning}
@@ -254,7 +253,7 @@
             {/each}
           </ul>
           <Button size="small" variant="primary" onclick={onClose}>Close Anyway</Button>
-        </div>
+        </Alert>
       {/if}
 
       <section class="settings-section">
@@ -635,38 +634,6 @@
     color: var(--secondary-text-color, #9b9b9b);
   }
 
-  .alert {
-    padding: 1rem;
-    border-radius: 6px;
-    margin-bottom: 1rem;
-  }
-
-  .alert-error {
-    background: rgba(244, 67, 54, 0.1);
-    border: 1px solid var(--error-color, #f44336);
-    color: var(--error-color, #f44336);
-  }
-
-  .alert-warning {
-    background: rgba(255, 152, 0, 0.1);
-    border: 1px solid var(--warning-color, #ff9800);
-    color: var(--warning-color, #ff9800);
-  }
-
-  .alert-success {
-    background: rgba(76, 175, 80, 0.1);
-    border: 1px solid var(--success-color, #4caf50);
-    color: var(--success-color, #4caf50);
-  }
-
-  .alert ul {
-    margin: 0.5rem 0;
-    padding-left: 1.5rem;
-  }
-
-  .alert li {
-    margin: 0.25rem 0;
-  }
 
   .settings-section .section-heading {
     margin: 0 0 1rem 0;

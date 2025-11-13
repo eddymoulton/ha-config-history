@@ -11,6 +11,7 @@
   import Button from "./components/Button.svelte";
   import { formatRelativeTime } from "./utils";
   import LoadingState from "./LoadingState.svelte";
+  import Alert from "./components/Alert.svelte";
 
   type DiffViewerProps = {
     config: ConfigMetadata | null;
@@ -308,7 +309,7 @@
 
       {#if !loading && !error}
         {#if restoreSuccess}
-          <div class="alert alert-success">{restoreSuccess}</div>
+          <Alert type="success" message={restoreSuccess} />
         {:else if diffData}
           <div class="diff-content">
             {#if diffData.type === "diff"}
@@ -448,18 +449,6 @@
     font-size: 0.9rem;
   }
 
-  .alert {
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border-radius: 4px;
-    text-align: center;
-  }
-
-  .alert-success {
-    background: rgba(76, 175, 80, 0.2);
-    color: var(--success-color, #4caf50);
-    border: 1px solid var(--success-color, #4caf50);
-  }
 
   .diff-content {
     flex: 1;
