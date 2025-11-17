@@ -225,19 +225,19 @@
   <div class="header">
     {#if onBack && isMobile}
       <Button
+        label="Back"
         variant="outlined"
         size="small"
         onclick={onBack}
         type="button"
         aria-label="Back to backups"
         icon="←"
-      >
-        Back
-      </Button>
+      ></Button>
     {/if}
     <div class="title-container">
       <h2>{selectedBackup ? selectedBackup.filename : "Select a backup"}</h2>
       <Button
+        label="Restore"
         variant="success"
         size="small"
         onclick={handleRestore}
@@ -246,36 +246,31 @@
         title={selectedBackup?.filename === currentBackup?.filename
           ? "Cannot restore current backup"
           : "Restore this backup"}
-      >
-        Restore
-      </Button>
+      ></Button>
     </div>
     <div class="diff-controls">
       <div class="comparison-modes">
         <Button
-          variant={comparisonMode === 'current' ? 'primary' : 'secondary'}
+          label="vs Current"
+          variant={comparisonMode === "current" ? "primary" : "secondary"}
           size="small"
           onclick={() => handleComparisonModeChange("current")}
           type="button"
-        >
-          vs Current
-        </Button>
+        ></Button>
         <Button
-          variant={comparisonMode === 'previous' ? 'primary' : 'secondary'}
+          label="vs Previous"
+          variant={comparisonMode === "previous" ? "primary" : "secondary"}
           size="small"
           onclick={() => handleComparisonModeChange("previous")}
           type="button"
-        >
-          vs Previous
-        </Button>
+        ></Button>
         <Button
-          variant={comparisonMode === 'two-backups' ? 'primary' : 'secondary'}
+          label="Compare Two"
+          variant={comparisonMode === "two-backups" ? "primary" : "secondary"}
           size="small"
           onclick={() => handleComparisonModeChange("two-backups")}
           type="button"
-        >
-          Compare Two
-        </Button>
+        ></Button>
       </div>
 
       {#if comparisonMode === "two-backups"}
@@ -448,7 +443,6 @@
     border-radius: 4px;
     font-size: 0.9rem;
   }
-
 
   .diff-content {
     flex: 1;

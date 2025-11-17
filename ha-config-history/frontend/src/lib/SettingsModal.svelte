@@ -10,7 +10,6 @@
   import Button from "./components/Button.svelte";
   import FormGroup from "./components/FormGroup.svelte";
   import FormInput from "./components/FormInput.svelte";
-  import FormSelect from "./components/FormSelect.svelte";
   import Alert from "./components/Alert.svelte";
 
   type Props = {
@@ -252,7 +251,12 @@
               <li>{warning}</li>
             {/each}
           </ul>
-          <Button size="small" variant="primary" onclick={onClose}>Close Anyway</Button>
+          <Button
+            size="small"
+            variant="primary"
+            onclick={onClose}
+            label="Close Anyway"
+          />
         </Alert>
       {/if}
 
@@ -288,10 +292,7 @@
               />
             </FormGroup>
 
-            <FormGroup
-              label="Backup Directory"
-              for="backup-dir"
-            >
+            <FormGroup label="Backup Directory" for="backup-dir">
               <FormInput
                 id="backup-dir"
                 type="text"
@@ -301,10 +302,7 @@
               />
             </FormGroup>
 
-            <FormGroup
-              label="Server Port"
-              for="port"
-            >
+            <FormGroup label="Server Port" for="port">
               <FormInput
                 id="port"
                 type="text"
@@ -324,10 +322,7 @@
                 type="text"
                 bind:value={settings.cronSchedule}
                 placeholder="0 2 * * *"
-                changed={hasChanged(
-                  "cronSchedule",
-                  settings.cronSchedule
-                )}
+                changed={hasChanged("cronSchedule", settings.cronSchedule)}
               />
             </FormGroup>
 
@@ -363,6 +358,7 @@
 
             <div class="backup-action">
               <Button
+                label={backingUp ? "Running Backup..." : "Backup Now"}
                 variant="success"
                 size="large"
                 type="button"
@@ -370,9 +366,7 @@
                 disabled={backingUp}
                 loading={backingUp}
                 icon={backingUp ? undefined : "⚡"}
-              >
-                {backingUp ? "Running Backup..." : "Backup Now"}
-              </Button>
+              />
               <span class="backup-help"
                 >Manually trigger a backup of all configured files</span
               >
@@ -395,9 +389,14 @@
             >
             Config Backup Options
           </div>
-          <Button variant="primary" size="small" type="button" onclick={addConfig} icon="+">
-            Add Config
-          </Button>
+          <Button
+            label="Add Config"
+            variant="primary"
+            size="small"
+            type="button"
+            onclick={addConfig}
+            icon="+"
+          ></Button>
         </div>
 
         {#if openSection === "configs"}
@@ -597,22 +596,20 @@
 
       <div class="modal-actions">
         <Button
+          label="Cancel"
           variant="secondary"
           type="button"
           onclick={onClose}
           disabled={saving}
-        >
-          Cancel
-        </Button>
+        />
         <Button
+          label={saving ? "Saving..." : "Save Settings"}
           variant="success"
           type="button"
           onclick={handleSave}
           disabled={saving}
           loading={saving}
-        >
-          {saving ? "Saving..." : "Save Settings"}
-        </Button>
+        />
       </div>
     </div>
   {/if}
@@ -633,7 +630,6 @@
     padding: 3rem;
     color: var(--secondary-text-color, #9b9b9b);
   }
-
 
   .settings-section .section-heading {
     margin: 0 0 1rem 0;
@@ -695,7 +691,6 @@
     font-size: 0.8rem;
     font-weight: 400;
   }
-
 
   .form-row {
     display: grid;

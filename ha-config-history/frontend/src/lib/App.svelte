@@ -81,9 +81,13 @@
 <main class="app">
   <header class="app-header">
     <h1>Home Assistant Config History</h1>
-    <Button variant="primary" size="small" type="button" onclick={handleOpenSettings}>
-      Settings
-    </Button>
+    <Button
+      label="Settings"
+      variant="primary"
+      size="small"
+      type="button"
+      onclick={handleOpenSettings}
+    />
   </header>
 
   <div
@@ -181,7 +185,6 @@
     white-space: nowrap;
     border: 0;
   }
-
 
   .app {
     min-height: 100vh;

@@ -1,12 +1,17 @@
 <script lang="ts">
   type Props = {
-    type?: 'info' | 'error' | 'warning' | 'success';
-    message?: string;
+    type?: "info" | "error" | "warning" | "success";
+    message?: string | null;
     dismissable?: boolean;
     onDismiss?: (() => void) | null;
   };
 
-  let { type = 'info', message = '', dismissable = false, onDismiss = null }: Props = $props();
+  let {
+    type = "info",
+    message = "",
+    dismissable = false,
+    onDismiss = null,
+  }: Props = $props();
 
   const alertClass = $derived(`alert alert-${type}`);
 </script>
@@ -17,7 +22,11 @@
       <slot>{message}</slot>
     </div>
     {#if dismissable && onDismiss}
-      <button class="alert-dismiss" onclick={onDismiss} aria-label="Dismiss alert">
+      <button
+        class="alert-dismiss"
+        onclick={onDismiss}
+        aria-label="Dismiss alert"
+      >
         ×
       </button>
     {/if}

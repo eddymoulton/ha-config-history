@@ -96,6 +96,12 @@
       deleting = false;
     }
   }
+
+  function handleEnterKey(event: KeyboardEvent) {
+    if (event.key === "Enter" && event.currentTarget instanceof HTMLElement) {
+      event.currentTarget.click();
+    }
+  }
 </script>
 
 <ListContainer>
@@ -122,6 +128,7 @@
           {/snippet}
         </FormSelect>
         <Button
+          label="Refresh"
           variant="outlined"
           size="small"
           onclick={loadConfigs}
@@ -129,9 +136,7 @@
           title="Refresh configs"
           aria-label="Refresh configs"
           icon="⟳"
-        >
-          Refresh
-        </Button>
+        ></Button>
       </div>
       <div class="search-box">
         <FormInput
@@ -159,10 +164,12 @@
             <ListItem
               selected={selectedConfig?.id === config.id}
               hoverTransform="lift"
-              on:click={() => onConfigClick(config)}
-              on:keydown={(e) => e.key === "Enter" && onConfigClick(config)}
+              onclick={() => onConfigClick(config)}
+              onkeydown={handleEnterKey}
             >
-              <div slot="title" class="automation-title">{config.friendlyName}</div>
+              <div slot="title" class="automation-title">
+                {config.friendlyName}
+              </div>
               <div slot="content" class="automation-stats">
                 <div class="stat">
                   <span class="stat-label">Backups</span>
@@ -208,26 +215,26 @@
   {#if configToDelete}
     <p class="config-info">{configToDelete.friendlyName}</p>
     <p class="warning-text">
-      ⚠️ This will delete {configToDelete.backupCount} backup{configToDelete.backupCount !== 1 ? "s" : ""} and cannot be undone!
+      ⚠️ This will delete {configToDelete.backupCount} backup{configToDelete.backupCount !==
+      1
+        ? "s"
+        : ""} and cannot be undone!
     </p>
   {/if}
 </ConfirmationModal>
 
 <style>
-
   .search-box {
     width: 100%;
     display: flex;
     justify-content: space-between;
   }
 
-
   .group-filter-row {
     display: flex;
     align-items: center;
     gap: 0.75rem;
   }
-
 
   .filter-count {
     color: var(--secondary-text-color, #9b9b9b);
@@ -241,7 +248,6 @@
     flex-direction: column;
     gap: 0.75rem;
   }
-
 
   .automation-title {
     color: var(--primary-text-color, #ffffff);
@@ -301,6 +307,5 @@
     .filter-count {
       text-align: center;
     }
-
   }
 </style>

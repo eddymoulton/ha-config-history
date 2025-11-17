@@ -3,7 +3,7 @@
     id?: string;
     type?: string;
     placeholder?: string;
-    value: string;
+    value: string | number | undefined;
     changed?: boolean;
     min?: string;
     class?: string;

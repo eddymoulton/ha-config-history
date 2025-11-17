@@ -1,222 +1,233 @@
 <script lang="ts">
-	import type { HTMLButtonAttributes } from 'svelte/elements';
+  import type { Snippet } from "svelte";
+  import type { HTMLButtonAttributes } from "svelte/elements";
 
-	interface Props extends HTMLButtonAttributes {
-		variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'outlined' | 'ghost';
-		size?: 'small' | 'medium' | 'large';
-		fullWidth?: boolean;
-		loading?: boolean;
-		icon?: string;
-		iconPosition?: 'left' | 'right';
-		class?: string;
-	}
+  interface Props extends HTMLButtonAttributes {
+    label: string;
+    variant?:
+      | "primary"
+      | "secondary"
+      | "success"
+      | "danger"
+      | "outlined"
+      | "ghost";
+    size?: "small" | "medium" | "large";
+    fullWidth?: boolean;
+    loading?: boolean;
+    icon?: string;
+    iconPosition?: "left" | "right";
+    class?: string;
+  }
 
-	let {
-		variant = 'primary',
-		size = 'medium',
-		fullWidth = false,
-		loading = false,
-		icon = undefined,
-		iconPosition = 'left',
-		class: className = '',
-		disabled = false,
-		onclick = undefined,
-		onmouseenter = undefined,
-		onmouseleave = undefined,
-		onfocus = undefined,
-		onblur = undefined,
-		...restProps
-	}: Props = $props();
+  let {
+    variant = "primary",
+    size = "medium",
+    label = "",
+    fullWidth = false,
+    loading = false,
+    icon = undefined,
+    iconPosition = "left",
+    class: className = "",
+    disabled = false,
+    onclick = undefined,
+    onmouseenter = undefined,
+    onmouseleave = undefined,
+    onfocus = undefined,
+    onblur = undefined,
+    ...restProps
+  }: Props = $props();
 
-	const buttonClass = $derived([
-		'btn',
-		`btn-${variant}`,
-		`btn-${size}`,
-		fullWidth && 'btn-full-width',
-		loading && 'btn-loading',
-		className
-	]
-		.filter(Boolean)
-		.join(' '));
+  const buttonClass = $derived(
+    [
+      "btn",
+      `btn-${variant}`,
+      `btn-${size}`,
+      fullWidth && "btn-full-width",
+      loading && "btn-loading",
+      className,
+    ]
+      .filter(Boolean)
+      .join(" ")
+  );
 </script>
 
 <button
-	class={buttonClass}
-	disabled={disabled || loading}
-	{onclick}
-	{onmouseenter}
-	{onmouseleave}
-	{onfocus}
-	{onblur}
-	{...restProps}
+  class={buttonClass}
+  disabled={disabled || loading}
+  {onclick}
+  {onmouseenter}
+  {onmouseleave}
+  {onfocus}
+  {onblur}
+  {...restProps}
 >
-	{#if loading}
-		<span class="btn-spinner" aria-hidden="true">⟳</span>
-	{:else if icon && iconPosition === 'left'}
-		<span class="btn-icon" aria-hidden="true">{icon}</span>
-	{/if}
-	<slot />
-	{#if icon && iconPosition === 'right' && !loading}
-		<span class="btn-icon" aria-hidden="true">{icon}</span>
-	{/if}
+  {#if loading}
+    <span class="btn-spinner" aria-hidden="true">⟳</span>
+  {:else if icon && iconPosition === "left"}
+    <span class="btn-icon" aria-hidden="true">{icon}</span>
+  {/if}
+  {label}
+  {#if icon && iconPosition === "right" && !loading}
+    <span class="btn-icon" aria-hidden="true">{icon}</span>
+  {/if}
 </button>
 
 <style>
-	.btn {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.5rem;
-		border: none;
-		border-radius: 4px;
-		font-weight: 500;
-		cursor: pointer;
-		transition: all 0.2s;
-		font-family: inherit;
-		line-height: 1;
-		position: relative;
-		white-space: nowrap;
-	}
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: none;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    line-height: 1;
+    position: relative;
+    white-space: nowrap;
+  }
 
-	.btn:focus-visible {
-		outline: 2px solid var(--primary-color, #03a9f4);
-		outline-offset: 2px;
-	}
+  .btn:focus-visible {
+    outline: 2px solid var(--primary-color, #03a9f4);
+    outline-offset: 2px;
+  }
 
-	.btn:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-	}
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
-	.btn-small {
-		padding: 0.4rem 0.8rem;
-		font-size: 0.85rem;
-	}
+  .btn-small {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+  }
 
-	.btn-medium {
-		padding: 0.6rem 1.2rem;
-		font-size: 0.95rem;
-	}
+  .btn-medium {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.95rem;
+  }
 
-	.btn-large {
-		padding: 0.75rem 1.5rem;
-		font-size: 1rem;
-		font-weight: 600;
-		border-radius: 6px;
-	}
+  .btn-large {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 6px;
+  }
 
-	.btn-full-width {
-		width: 100%;
-	}
+  .btn-full-width {
+    width: 100%;
+  }
 
-	.btn-primary {
-		background: var(--primary-color, #03a9f4);
-		color: white;
-	}
+  .btn-primary {
+    background: var(--primary-color, #03a9f4);
+    color: white;
+  }
 
-	.btn-primary:hover:not(:disabled) {
-		background: var(--primary-color-dark, #0288d1);
-	}
+  .btn-primary:hover:not(:disabled) {
+    background: var(--primary-color-dark, #0288d1);
+  }
 
-	.btn-secondary {
-		background: var(--ha-card-border-color, #3c3c3e);
-		color: var(--primary-text-color, #ffffff);
-	}
+  .btn-secondary {
+    background: var(--ha-card-border-color, #3c3c3e);
+    color: var(--primary-text-color, #ffffff);
+  }
 
-	.btn-secondary:hover:not(:disabled) {
-		background: var(--ha-card-border-color, #4c4c4e);
-	}
+  .btn-secondary:hover:not(:disabled) {
+    background: var(--ha-card-border-color, #4c4c4e);
+  }
 
-	.btn-success {
-		background: var(--success-color, #4caf50);
-		color: white;
-	}
+  .btn-success {
+    background: var(--success-color, #4caf50);
+    color: white;
+  }
 
-	.btn-success:hover:not(:disabled) {
-		background: var(--success-color-dark, #45a049);
-	}
+  .btn-success:hover:not(:disabled) {
+    background: var(--success-color-dark, #45a049);
+  }
 
-	.btn-large.btn-success:hover:not(:disabled) {
-		transform: translateY(-1px);
-		box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
-	}
+  .btn-large.btn-success:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+  }
 
-	.btn-danger {
-		background: var(--error-color, #f44336);
-		color: white;
-	}
+  .btn-danger {
+    background: var(--error-color, #f44336);
+    color: white;
+  }
 
-	.btn-danger:hover:not(:disabled) {
-		background: #d32f2f;
-	}
+  .btn-danger:hover:not(:disabled) {
+    background: #d32f2f;
+  }
 
-	.btn-outlined {
-		background: transparent;
-		color: var(--primary-color, #03a9f4);
-		border: 1px solid var(--primary-color, #03a9f4);
-	}
+  .btn-outlined {
+    background: transparent;
+    color: var(--primary-color, #03a9f4);
+    border: 1px solid var(--primary-color, #03a9f4);
+  }
 
-	.btn-outlined:hover:not(:disabled) {
-		background: var(--primary-color, #03a9f4);
-		color: white;
-	}
+  .btn-outlined:hover:not(:disabled) {
+    background: var(--primary-color, #03a9f4);
+    color: white;
+  }
 
-	.btn-outlined.btn-danger {
-		color: var(--error-color, #f44336);
-		border-color: var(--error-color, #f44336);
-	}
+  .btn-outlined.btn-danger {
+    color: var(--error-color, #f44336);
+    border-color: var(--error-color, #f44336);
+  }
 
-	.btn-outlined.btn-danger:hover:not(:disabled) {
-		background: var(--error-color, #f44336);
-		color: white;
-	}
+  .btn-outlined.btn-danger:hover:not(:disabled) {
+    background: var(--error-color, #f44336);
+    color: white;
+  }
 
-	.btn-ghost {
-		background: transparent;
-		color: var(--primary-text-color, #ffffff);
-		border: 1px solid transparent;
-	}
+  .btn-ghost {
+    background: transparent;
+    color: var(--primary-text-color, #ffffff);
+    border: 1px solid transparent;
+  }
 
-	.btn-ghost:hover:not(:disabled) {
-		background: var(--ha-card-border-color, #3c3c3e);
-		border-color: var(--ha-card-border-color, #3c3c3e);
-	}
+  .btn-ghost:hover:not(:disabled) {
+    background: var(--ha-card-border-color, #3c3c3e);
+    border-color: var(--ha-card-border-color, #3c3c3e);
+  }
 
-	.btn-ghost.btn-danger {
-		color: var(--error-color, #f44336);
-	}
+  .btn-ghost.btn-danger {
+    color: var(--error-color, #f44336);
+  }
 
-	.btn-ghost.btn-danger:hover:not(:disabled) {
-		background: rgba(244, 67, 54, 0.1);
-		border-color: transparent;
-	}
+  .btn-ghost.btn-danger:hover:not(:disabled) {
+    background: rgba(244, 67, 54, 0.1);
+    border-color: transparent;
+  }
 
-	.btn-loading {
-		color: transparent;
-	}
+  .btn-loading {
+    color: transparent;
+  }
 
-	.btn-spinner {
-		position: absolute;
-		left: 50%;
-		top: 50%;
-		transform: translate(-50%, -50%);
-		animation: spin 1s linear infinite;
-		color: currentColor;
-		font-size: 1.2em;
-	}
+  .btn-spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    animation: spin 1s linear infinite;
+    color: currentColor;
+    font-size: 1.2em;
+  }
 
-	.btn-icon {
-		display: inline-flex;
-		font-size: 1.2em;
-		line-height: 1;
-	}
+  .btn-icon {
+    display: inline-flex;
+    font-size: 1.2em;
+    line-height: 1;
+  }
 
-	@keyframes spin {
-		from {
-			transform: translate(-50%, -50%) rotate(0deg);
-		}
-		to {
-			transform: translate(-50%, -50%) rotate(360deg);
-		}
-	}
+  @keyframes spin {
+    from {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
 </style>

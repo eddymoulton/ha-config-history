@@ -99,24 +99,27 @@
 </script>
 
 <ListContainer>
-  <ListHeader slot="header" title={config ? config.friendlyName : "Select an config"}>
+  <ListHeader
+    slot="header"
+    title={config ? config.friendlyName : "Select an config"}
+  >
     <svelte:fragment slot="left">
       {#if onBack && isMobile}
         <Button
+          label="Back"
           variant="outlined"
           size="small"
           onclick={onBack}
           type="button"
           aria-label="Back to configs"
           icon="←"
-        >
-          Back
-        </Button>
+        ></Button>
       {/if}
     </svelte:fragment>
     <svelte:fragment slot="right">
       {#if config}
         <Button
+          label="Refresh"
           variant="outlined"
           size="small"
           onclick={loadBackups}
@@ -124,9 +127,7 @@
           title="Refresh backups"
           aria-label="Refresh backups"
           icon="⟳"
-        >
-          Refresh
-        </Button>
+        ></Button>
       {/if}
     </svelte:fragment>
     <svelte:fragment slot="subtitle">
@@ -152,10 +153,10 @@
         {#each backups as backup, index (backup.filename)}
           <ListItem
             selected={selectedBackup?.filename === backup.filename}
-            variant={index === 0 ? 'current' : 'default'}
+            variant={index === 0 ? "current" : "default"}
             hoverTransform="slide"
-            on:click={() => handleBackupClick(backup)}
-            on:keydown={(e) => e.key === "Enter" && handleBackupClick(backup)}
+            onclick={() => handleBackupClick(backup)}
+            onkeydown={(e) => e.key === "Enter" && handleBackupClick(backup)}
           >
             <div slot="title" class="backup-filename">
               {backup.date}
@@ -207,7 +208,6 @@
     flex-direction: column;
     gap: 0.5rem;
   }
-
 
   .backup-filename {
     color: var(--primary-text-color, #ffffff);

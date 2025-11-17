@@ -11,49 +11,47 @@
     onConfirm: () => void;
     confirmText?: string;
     cancelText?: string;
-    variant?: 'primary' | 'danger' | 'warning';
+    variant?: "primary" | "danger";
     disabled?: boolean;
     children?: Snippet;
   };
 
-  let { 
-    isOpen, 
-    title, 
-    message, 
-    onClose, 
-    onConfirm, 
-    confirmText = 'Confirm',
-    cancelText = 'Cancel',
-    variant = 'primary',
+  let {
+    isOpen,
+    title,
+    message,
+    onClose,
+    onConfirm,
+    confirmText = "Confirm",
+    cancelText = "Cancel",
+    variant = "primary",
     disabled = false,
-    children
+    children,
   }: Props = $props();
 </script>
 
-<Modal {isOpen} {title} onClose={onClose} size="small">
+<Modal {isOpen} {title} {onClose} size="small">
   <p class="message">{message}</p>
-  
+
   {#if children}
     {@render children()}
   {/if}
 
   {#snippet actions()}
     <Button
+      label={cancelText}
       variant="secondary"
       onclick={onClose}
       type="button"
       {disabled}
-    >
-      {cancelText}
-    </Button>
+    ></Button>
     <Button
+      label={confirmText}
       {variant}
       onclick={onConfirm}
       type="button"
       {disabled}
-    >
-      {confirmText}
-    </Button>
+    ></Button>
   {/snippet}
 </Modal>
 
