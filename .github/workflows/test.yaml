@@ -1,5 +1,4 @@
 name: "Tests"
-run-name: "Tests"
 
 on:
   workflow_dispatch:

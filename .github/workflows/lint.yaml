@@ -1,4 +1,4 @@
-name: golangci-lint
+name: lint
 on:
   push:
     branches:
@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   golangci:
-    name: lint
+    name: golangci-lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -23,3 +23,19 @@ jobs:
         with:
           version: v2.1
           working-directory: ./ha-config-history
+
+  svelte:
+    name: svelte-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+      - name: Install dependencies
+        run: |
+          cd ha-config-history/frontend
+          npm install
+      - name: Run svelte-check
+        run: |
+          cd ha-config-history/frontend
+          npx svelte-check --tsconfig ./tsconfig.json

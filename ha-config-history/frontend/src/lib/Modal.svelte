@@ -1,14 +1,17 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
+  import IconButton from "./components/IconButton.svelte";
 
   type Props = {
     isOpen: boolean;
     title: string;
     onClose: () => void;
     children: Snippet;
+    actions?: Snippet;
+    size?: 'small' | 'medium' | 'large';
   };
 
-  let { isOpen, title, onClose, children }: Props = $props();
+  let { isOpen, title, onClose, children, actions, size = 'large' }: Props = $props();
 
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === "Escape") {
@@ -33,22 +36,28 @@
     aria-modal="true"
     aria-labelledby="modal-title"
   >
-    <div class="modal-content">
+    <div class="modal-content" class:small={size === 'small'} class:medium={size === 'medium'} class:large={size === 'large'}>
       <div class="modal-header">
         <h2 id="modal-title">{title}</h2>
-        <button
-          class="close-btn"
+        <IconButton
+          icon="×"
+          variant="ghost"
+          size="large"
           onclick={onClose}
           type="button"
           aria-label="Close modal"
-        >
-          ×
-        </button>
+        />
       </div>
 
       <div class="modal-body">
         {@render children()}
       </div>
+
+      {#if actions}
+        <div class="modal-footer">
+          {@render actions()}
+        </div>
+      {/if}
     </div>
   </div>
 {/if}
@@ -69,8 +78,8 @@
   }
 
   .modal-content {
-    background: var(--ha-card-background, #1c1c1e);
-    border: 1px solid var(--ha-card-border-color, #2c2c2e);
+    background: var(--ha-card-background);
+    border: 1px solid var(--ha-card-border-color);
     border-radius: 8px;
     width: 100%;
     max-width: 800px;
@@ -85,42 +94,42 @@
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem 1.5rem 1rem 1.5rem;
-    border-bottom: 1px solid var(--ha-card-border-color, #2c2c2e);
+    border-bottom: 1px solid var(--ha-card-border-color);
     flex-shrink: 0;
   }
 
   .modal-header h2 {
-    color: var(--primary-text-color, #ffffff);
+    color: var(--primary-text-color);
     font-size: 1.5rem;
     font-weight: 500;
     margin: 0;
-  }
-
-  .close-btn {
-    background: none;
-    border: none;
-    color: var(--secondary-text-color, #9b9b9b);
-    font-size: 2rem;
-    cursor: pointer;
-    padding: 0;
-    width: 2rem;
-    height: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    transition: all 0.2s;
-  }
-
-  .close-btn:hover {
-    background: var(--ha-card-border-color, #2c2c2e);
-    color: var(--primary-text-color, #ffffff);
   }
 
   .modal-body {
     padding: 1.5rem;
     overflow-y: auto;
     flex: 1;
+  }
+
+  .modal-footer {
+    padding: 1rem 1.5rem 1.5rem 1.5rem;
+    border-top: 1px solid var(--ha-card-border-color);
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    flex-shrink: 0;
+  }
+
+  .modal-content.small {
+    max-width: 450px;
+  }
+
+  .modal-content.medium {
+    max-width: 600px;
+  }
+
+  .modal-content.large {
+    max-width: 800px;
   }
 
   @media (max-width: 768px) {

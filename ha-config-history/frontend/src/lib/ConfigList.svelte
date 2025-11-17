@@ -2,8 +2,17 @@
   import { onMount } from "svelte";
   import type { ConfigMetadata } from "./types";
   import { api } from "./api";
-  import { formatFileSize } from "./utils";
+  import { formatFileSize, getErrorMessage } from "./utils";
   import LoadingState from "./LoadingState.svelte";
+  import Button from "./components/Button.svelte";
+  import IconButton from "./components/IconButton.svelte";
+  import ListContainer from "./components/ListContainer.svelte";
+  import FilterSection from "./components/FilterSection.svelte";
+  import ListContent from "./components/ListContent.svelte";
+  import ListItem from "./components/ListItem.svelte";
+  import ConfirmationModal from "./components/ConfirmationModal.svelte";
+  import FormInput from "./components/FormInput.svelte";
+  import FormSelect from "./components/FormSelect.svelte";
 
   type ConfigListProps = {
     onConfigClick: (config: ConfigMetadata) => void;
@@ -42,7 +51,7 @@
       configs = await api.getConfigs();
       selectedGroup = groups[0];
     } catch (err) {
-      error = err instanceof Error ? err.message : "Failed to load configs";
+      error = getErrorMessage(err, "Failed to load configs");
     } finally {
       loading = false;
     }
@@ -87,45 +96,54 @@
       deleting = false;
     }
   }
+
+  function handleEnterKey(event: KeyboardEvent) {
+    if (event.key === "Enter" && event.currentTarget instanceof HTMLElement) {
+      event.currentTarget.click();
+    }
+  }
 </script>
 
-<div class="automation-list">
-  <LoadingState
-    {loading}
-    {error}
-    empty={!loading && !error && configs.length === 0}
-    emptyMessage="No configs found"
-    loadingMessage="Loading configs..."
-  />
+<ListContainer>
+  <FilterSection>
+    <LoadingState
+      {loading}
+      {error}
+      empty={!loading && !error && configs.length === 0}
+      emptyMessage="No configs found"
+      loadingMessage="Loading configs..."
+    />
 
-  {#if !loading && !error && configs.length > 0}
-    <div class="filter-section">
+    {#if !loading && !error && configs.length > 0}
       <div class="group-filter-row">
-        <select
+        <FormSelect
           id="group-filter"
           bind:value={selectedGroup}
-          class="group-select"
+          style="group-select"
         >
-          {#each groups as group}
-            <option value={group}>{group}</option>
-          {/each}
-        </select>
-        <button
-          class="refresh-btn"
+          {#snippet children()}
+            {#each groups as group}
+              <option value={group}>{group}</option>
+            {/each}
+          {/snippet}
+        </FormSelect>
+        <Button
+          label="Refresh"
+          variant="outlined"
+          size="small"
           onclick={loadConfigs}
           type="button"
           title="Refresh configs"
           aria-label="Refresh configs"
-        >
-          ⟳
-        </button>
+          icon="⟳"
+        ></Button>
       </div>
       <div class="search-box">
-        <input
+        <FormInput
           type="text"
           placeholder="Search configs..."
           bind:value={searchQuery}
-          class="search-input"
+          style="search-input"
         />
         <div class="filter-count">
           {filteredConfigs.length} config{filteredConfigs.length !== 1
@@ -133,146 +151,83 @@
             : ""}
         </div>
       </div>
-    </div>
+    {/if}
+  </FilterSection>
 
-    {#if filteredConfigs.length === 0}
-      <LoadingState empty={true} emptyMessage="No configs in this group" />
-    {:else}
-      <div class="grid">
-        {#each filteredConfigs as config (config.id)}
-          <div
-            class="automation-card {selectedConfig?.id === config.id
-              ? 'selected'
-              : ''}"
-            onclick={() => onConfigClick(config)}
-            onkeydown={(e) => e.key === "Enter" && onConfigClick(config)}
-            tabindex="0"
-            role="button"
-          >
-            <div class="automation-header">
-              <div class="automation-title">{config.friendlyName}</div>
-              <button
-                class="delete-btn"
+  <ListContent>
+    {#if !loading && !error && configs.length > 0}
+      {#if filteredConfigs.length === 0}
+        <LoadingState empty={true} emptyMessage="No configs in this group" />
+      {:else}
+        <div class="list-grid">
+          {#each filteredConfigs as config (config.id)}
+            {#snippet actions()}
+              <IconButton
+                icon="🗑️"
+                variant="ghost"
+                size="small"
+                class="btn-danger"
                 onclick={(e) => handleDeleteClick(config, e)}
                 type="button"
                 title="Delete all backups"
                 aria-label="Delete all backups"
-              >
-                🗑️
-              </button>
-            </div>
+              />
+            {/snippet}
 
-            <div class="automation-stats">
-              <div class="stat">
-                <span class="stat-label">Backups</span>
-                <span class="stat-value">{config.backupCount}</span>
+            <ListItem
+              title={config.friendlyName}
+              selected={selectedConfig?.id === config.id}
+              hoverTransform="lift"
+              onclick={() => onConfigClick(config)}
+              onkeydown={handleEnterKey}
+              {actions}
+            >
+              <div class="automation-stats">
+                <div class="stat">
+                  <span class="stat-label">Backups</span>
+                  <span class="stat-value">{config.backupCount}</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-label">Total Size</span>
+                  <span class="stat-value"
+                    >{formatFileSize(config.backupsSize)}</span
+                  >
+                </div>
               </div>
-              <div class="stat">
-                <span class="stat-label">Total Size</span>
-                <span class="stat-value"
-                  >{formatFileSize(config.backupsSize)}</span
-                >
-              </div>
-            </div>
-          </div>
-        {/each}
-      </div>
-    {/if}
-  {/if}
-</div>
-
-{#if showDeleteConfirm}
-  <div
-    class="modal-overlay"
-    onclick={cancelDelete}
-    onkeydown={(e) => e.key === "Escape" && cancelDelete()}
-    role="presentation"
-  >
-    <div
-      class="modal-content"
-      onclick={(e) => e.stopPropagation()}
-      onkeydown={(e) => e.stopPropagation()}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="delete-modal-title"
-      tabindex="-1"
-    >
-      <h3 id="delete-modal-title">Delete All Backups?</h3>
-      <h3>Delete All Backups?</h3>
-      <p>Are you sure you want to delete ALL backups for this config?</p>
-      {#if configToDelete}
-        <p class="config-info">{configToDelete.friendlyName}</p>
-        <p class="warning-text">
-          ⚠️ This will delete {configToDelete.backupCount} backup{configToDelete.backupCount !==
-          1
-            ? "s"
-            : ""} and cannot be undone!
-        </p>
+            </ListItem>
+          {/each}
+        </div>
       {/if}
-      <div class="modal-actions">
-        <button
-          class="cancel-btn"
-          onclick={cancelDelete}
-          type="button"
-          disabled={deleting}
-        >
-          Cancel
-        </button>
-        <button
-          class="confirm-delete-btn"
-          onclick={confirmDelete}
-          type="button"
-          disabled={deleting}
-        >
-          {deleting ? "Deleting..." : "Delete All"}
-        </button>
-      </div>
-    </div>
-  </div>
-{/if}
+    {/if}
+  </ListContent>
+</ListContainer>
+
+<ConfirmationModal
+  isOpen={showDeleteConfirm}
+  title="Delete All Backups?"
+  message="Are you sure you want to delete ALL backups for this config?"
+  onClose={cancelDelete}
+  onConfirm={confirmDelete}
+  confirmText={deleting ? "Deleting..." : "Delete All"}
+  variant="danger"
+  disabled={deleting}
+>
+  {#if configToDelete}
+    <p class="config-info">{configToDelete.friendlyName}</p>
+    <p class="warning-text">
+      ⚠️ This will delete {configToDelete.backupCount} backup{configToDelete.backupCount !==
+      1
+        ? "s"
+        : ""} and cannot be undone!
+    </p>
+  {/if}
+</ConfirmationModal>
 
 <style>
-  .automation-list {
-    height: calc(100vh - 84px);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    background: var(--ha-card-background, #1c1c1e);
-  }
-
-  .filter-section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    padding: 1.5rem;
-    border-bottom: 1px solid var(--ha-card-border-color, #2c2c2e);
-    flex-shrink: 0;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: var(--ha-card-background, #1c1c1e);
-    min-height: 140px;
-  }
-
   .search-box {
     width: 100%;
     display: flex;
     justify-content: space-between;
-  }
-
-  .search-input {
-    width: 80%;
-    padding: 0.6rem;
-    background: var(--ha-card-background, #2c2c2e);
-    border: 1px solid var(--ha-card-border-color, #3c3c3e);
-    border-radius: 4px;
-    color: var(--primary-text-color, #ffffff);
-    font-size: 0.9rem;
-  }
-
-  .search-input:focus {
-    outline: none;
-    border-color: var(--primary-color, #03a9f4);
   }
 
   .group-filter-row {
@@ -281,117 +236,17 @@
     gap: 0.75rem;
   }
 
-  .refresh-btn {
-    background: transparent;
-    color: var(--primary-color, #03a9f4);
-    border: 1px solid var(--primary-color, #03a9f4);
-    padding: 0.4rem 0.8rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1.2rem;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .refresh-btn:hover {
-    background: var(--primary-color, #03a9f4);
-    color: white;
-  }
-
-  .group-select {
-    flex: 1;
-    padding: 0.5rem;
-    background: var(--ha-card-background, #2c2c2e);
-    border: 1px solid var(--ha-card-border-color, #3c3c3e);
-    border-radius: 4px;
-    color: var(--primary-text-color, #ffffff);
-    font-size: 0.9rem;
-    cursor: pointer;
-  }
-
-  .group-select:focus {
-    outline: none;
-    border-color: var(--primary-color, #03a9f4);
-  }
-
   .filter-count {
-    color: var(--secondary-text-color, #9b9b9b);
+    color: var(--secondary-text-color);
     font-size: 0.85rem;
     white-space: nowrap;
     align-content: end;
   }
 
-  .grid {
-    flex: 1;
-    overflow-y: auto;
-    padding: 1rem;
+  .list-grid {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-  }
-
-  .automation-card {
-    background: var(--ha-card-background, #1c1c1e);
-    border: 1px solid var(--ha-card-border-color, #2c2c2e);
-    border-radius: 8px;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    position: relative;
-    outline: none;
-  }
-
-  .automation-card:hover,
-  .automation-card:focus {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    border-color: var(--primary-color, #03a9f4);
-  }
-
-  .automation-card.selected {
-    border-color: var(--primary-color, #03a9f4);
-    background: rgba(3, 169, 244, 0.1);
-  }
-
-  .automation-header {
-    margin-bottom: 0.25rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .automation-title {
-    color: var(--primary-text-color, #ffffff);
-    font-size: 1rem;
-    font-weight: 500;
-    margin: 0;
-    line-height: 1.3;
-    flex: 1;
-  }
-
-  .delete-btn {
-    background: transparent;
-    border: none;
-    color: var(--error-color, #f44336);
-    cursor: pointer;
-    font-size: 1.1rem;
-    padding: 0.25rem;
-    border-radius: 4px;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.7;
-    flex-shrink: 0;
-  }
-
-  .delete-btn:hover {
-    opacity: 1;
-    background: rgba(244, 67, 54, 0.1);
-    transform: scale(1.1);
   }
 
   .automation-stats {
@@ -406,46 +261,36 @@
   }
 
   .stat-label {
-    color: var(--secondary-text-color, #9b9b9b);
+    color: var(--secondary-text-color);
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   .stat-value {
-    color: var(--primary-text-color, #ffffff);
+    color: var(--primary-text-color);
     font-size: 0.9rem;
     font-weight: 400;
   }
 
   .config-info {
     font-weight: 600;
-    background: var(--ha-card-border-color, #2c2c2e);
+    background: var(--ha-card-border-color);
     padding: 0.5rem;
     border-radius: 4px;
-    color: var(--primary-text-color, #ffffff);
+    color: var(--primary-text-color);
     font-size: 0.95rem;
   }
 
   .warning-text {
-    color: var(--error-color, #f44336);
+    color: var(--error-color);
     font-weight: 500;
     font-size: 0.9rem;
   }
 
   @media (max-width: 768px) {
-    .filter-section {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 0.5rem;
-    }
-
     .filter-count {
       text-align: center;
-    }
-
-    .automation-card {
-      padding: 0.6rem 0.8rem;
     }
   }
 </style>

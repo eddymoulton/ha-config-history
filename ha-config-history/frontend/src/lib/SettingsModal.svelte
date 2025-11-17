@@ -6,6 +6,12 @@
     UpdateSettingsResponse,
   } from "./types";
   import { api } from "./api";
+  import { getErrorMessage } from "./utils";
+  import IconButton from "./components/IconButton.svelte";
+  import Button from "./components/Button.svelte";
+  import FormGroup from "./components/FormGroup.svelte";
+  import FormInput from "./components/FormInput.svelte";
+  import Alert from "./components/Alert.svelte";
 
   type Props = {
     isOpen: boolean;
@@ -49,7 +55,7 @@
       settings = await api.getSettings();
       originalSettings = JSON.parse(JSON.stringify(settings));
     } catch (err) {
-      error = err instanceof Error ? err.message : "Failed to load settings";
+      error = getErrorMessage(err, "Failed to load settings");
     } finally {
       loading = false;
     }
@@ -160,7 +166,7 @@
         error = response.error;
       }
     } catch (err) {
-      error = err instanceof Error ? err.message : "Failed to save settings";
+      error = getErrorMessage(err, "Failed to save settings");
     } finally {
       saving = false;
     }
@@ -220,7 +226,7 @@
         backupSuccess = false;
       }, 3000);
     } catch (err) {
-      error = err instanceof Error ? err.message : "Failed to trigger backup";
+      error = getErrorMessage(err, "Failed to trigger backup");
     } finally {
       backingUp = false;
     }
@@ -232,24 +238,27 @@
     <div class="loading">Loading settings...</div>
   {:else if settings}
     <div class="settings-form">
-      {#if error}
-        <div class="alert alert-error">{error}</div>
-      {/if}
+      <Alert type="error" message={error} />
 
       {#if backupSuccess}
-        <div class="alert alert-success">Backup completed successfully!</div>
+        <Alert type="success" message="Backup completed successfully!" />
       {/if}
 
       {#if warnings.length > 0}
-        <div class="alert alert-warning">
+        <Alert type="warning">
           <strong>Warnings:</strong>
           <ul>
             {#each warnings as warning}
               <li>{warning}</li>
             {/each}
           </ul>
-          <button class="btn-small" onclick={onClose}>Close Anyway</button>
-        </div>
+          <Button
+            size="small"
+            variant="primary"
+            onclick={onClose}
+            label="Close Anyway"
+          />
+        </Alert>
       {/if}
 
       <section class="settings-section">
@@ -268,100 +277,97 @@
 
         {#if openSection === "general"}
           <div class="section-content">
-            <div class="form-group">
-              <label for="ha-config-dir">Home Assistant Config Directory</label>
-              <input
+            <FormGroup
+              label="Home Assistant Config Directory"
+              for="ha-config-dir"
+            >
+              <FormInput
                 id="ha-config-dir"
                 type="text"
                 bind:value={settings.homeAssistantConfigDir}
                 placeholder="/config"
-                class:changed={hasChanged(
+                changed={hasChanged(
                   "homeAssistantConfigDir",
                   settings.homeAssistantConfigDir
                 )}
               />
-            </div>
+            </FormGroup>
 
-            <div class="form-group">
-              <label for="backup-dir">Backup Directory</label>
-              <input
+            <FormGroup label="Backup Directory" for="backup-dir">
+              <FormInput
                 id="backup-dir"
                 type="text"
                 bind:value={settings.backupDir}
                 placeholder="./backups"
-                class:changed={hasChanged("backupDir", settings.backupDir)}
+                changed={hasChanged("backupDir", settings.backupDir)}
               />
-            </div>
+            </FormGroup>
 
-            <div class="form-group">
-              <label for="port">Server Port</label>
-              <input
+            <FormGroup label="Server Port" for="port">
+              <FormInput
                 id="port"
                 type="text"
                 bind:value={settings.port}
                 placeholder=":40613"
-                class:changed={hasChanged("port", settings.port)}
+                changed={hasChanged("port", settings.port)}
               />
-            </div>
+            </FormGroup>
 
-            <div class="form-group">
-              <label for="cron-schedule">
-                Cron Schedule
-                <span class="help-text"
-                  >(Leave empty to disable, e.g., "0 2 * * *" for daily at 2 AM)</span
-                >
-              </label>
-              <input
+            <FormGroup
+              label="Cron Schedule"
+              for="cron-schedule"
+              helpText="(Leave empty to disable, e.g., &quot;0 2 * * *&quot; for daily at 2 AM)"
+            >
+              <FormInput
                 id="cron-schedule"
                 type="text"
                 bind:value={settings.cronSchedule}
                 placeholder="0 2 * * *"
-                class:changed={hasChanged(
-                  "cronSchedule",
-                  settings.cronSchedule
-                )}
+                changed={hasChanged("cronSchedule", settings.cronSchedule)}
               />
-            </div>
+            </FormGroup>
 
             <div class="form-row">
-              <div class="form-group">
-                <label for="max-backups">
-                  Default Max Backups
-                  <span class="help-text">(Leave empty for unlimited)</span>
-                </label>
-                <input
+              <FormGroup
+                label="Default Max Backups"
+                for="max-backups"
+                helpText="(Leave empty for unlimited)"
+              >
+                <FormInput
                   id="max-backups"
                   type="number"
                   bind:value={settings.defaultMaxBackups}
                   placeholder="unlimited"
                   min="1"
                 />
-              </div>
+              </FormGroup>
 
-              <div class="form-group">
-                <label for="max-age">
-                  Default Max Age (Days)
-                  <span class="help-text">(Leave empty for unlimited)</span>
-                </label>
-                <input
+              <FormGroup
+                label="Default Max Age (Days)"
+                for="max-age"
+                helpText="(Leave empty for unlimited)"
+              >
+                <FormInput
                   id="max-age"
                   type="number"
                   bind:value={settings.defaultMaxBackupAgeDays}
                   placeholder="unlimited"
                   min="1"
                 />
-              </div>
+              </FormGroup>
             </div>
 
             <div class="backup-action">
-              <button
-                class="btn-backup"
+              <Button
+                label={backingUp ? "Running Backup..." : "Backup Now"}
+                variant="success"
+                size="large"
                 type="button"
                 onclick={handleBackupNow}
                 disabled={backingUp}
-              >
-                {backingUp ? "Running Backup..." : "⚡ Backup Now"}
-              </button>
+                loading={backingUp}
+                icon={backingUp ? undefined : "⚡"}
+              />
               <span class="backup-help"
                 >Manually trigger a backup of all configured files</span
               >
@@ -384,9 +390,14 @@
             >
             Config Backup Options
           </div>
-          <button class="btn-add" type="button" onclick={addConfig}
-            >+ Add Config</button
-          >
+          <Button
+            label="Add Config"
+            variant="primary"
+            size="small"
+            type="button"
+            onclick={addConfig}
+            icon="+"
+          ></Button>
         </div>
 
         {#if openSection === "configs"}
@@ -406,59 +417,60 @@
                         <span class="config-type">{config.backupType}</span>
                       </div>
                       <div class="config-actions">
-                        <button
-                          class="btn-icon"
+                        <IconButton
+                          icon={editingConfigIndex === index ? "▼" : "▶"}
+                          variant="outlined"
+                          size="medium"
                           type="button"
                           onclick={() =>
                             (editingConfigIndex =
                               editingConfigIndex === index ? null : index)}
                           title="Edit"
-                        >
-                          {editingConfigIndex === index ? "▼" : "▶"}
-                        </button>
-                        <button
-                          class="btn-icon"
+                          aria-label="Edit"
+                        />
+                        <IconButton
+                          icon="⧉"
+                          variant="outlined"
+                          size="medium"
                           type="button"
                           onclick={() => duplicateConfig(index)}
                           title="Duplicate"
-                        >
-                          ⧉
-                        </button>
-                        <button
-                          class="btn-icon btn-danger"
+                          aria-label="Duplicate"
+                        />
+                        <IconButton
+                          icon="×"
+                          variant="outlined"
+                          size="medium"
+                          class="btn-danger"
                           type="button"
                           onclick={() => removeConfig(index)}
                           title="Remove"
-                        >
-                          ×
-                        </button>
+                          aria-label="Remove"
+                        />
                       </div>
                     </div>
 
                     {#if editingConfigIndex === index}
                       <div class="config-details">
-                        <div class="form-group">
-                          <label for="config-name-{index}">Name</label>
+                        <FormGroup label="Name" for="config-name-{index}">
                           <input
                             id="config-name-{index}"
                             type="text"
                             bind:value={config.name}
                             placeholder="Config name"
                           />
-                        </div>
+                        </FormGroup>
 
-                        <div class="form-group">
-                          <label for="config-path-{index}">Path</label>
+                        <FormGroup label="Path" for="config-path-{index}">
                           <input
                             id="config-path-{index}"
                             type="text"
                             bind:value={config.path}
                             placeholder="relative/path/to/file_or_directory"
                           />
-                        </div>
+                        </FormGroup>
 
-                        <div class="form-group">
-                          <label for="config-type-{index}">Backup Type</label>
+                        <FormGroup label="Backup Type" for="config-type-{index}">
                           <select
                             id="config-type-{index}"
                             bind:value={config.backupType}
@@ -467,44 +479,36 @@
                             <option value="single">Single</option>
                             <option value="directory">Directory</option>
                           </select>
-                        </div>
+                        </FormGroup>
 
                         {#if config.backupType === "multiple"}
                           <div class="form-row">
-                            <div class="form-group">
-                              <label for="config-id-node-{index}">ID Node</label
-                              >
+                            <FormGroup label="ID Node" for="config-id-node-{index}">
                               <input
                                 id="config-id-node-{index}"
                                 type="text"
                                 bind:value={config.idNode}
                                 placeholder="id"
                               />
-                            </div>
+                            </FormGroup>
 
-                            <div class="form-group">
-                              <label for="config-friendly-node-{index}"
-                                >Friendly Name Node</label
-                              >
+                            <FormGroup label="Friendly Name Node" for="config-friendly-node-{index}">
                               <input
                                 id="config-friendly-node-{index}"
                                 type="text"
                                 bind:value={config.friendlyNameNode}
                                 placeholder="alias"
                               />
-                            </div>
+                            </FormGroup>
                           </div>
                         {/if}
 
                         {#if config.backupType === "directory"}
-                          <div class="form-group">
-                            <label for="config-include-patterns-{index}">
-                              Include File Patterns
-                              <span class="help-text"
-                                >(Comma-separated glob patterns, e.g., *.yaml,
-                                *.json)</span
-                              >
-                            </label>
+                          <FormGroup
+                            label="Include File Patterns"
+                            for="config-include-patterns-{index}"
+                            helpText="(Comma-separated glob patterns, e.g., *.yaml, *.json)"
+                          >
                             <input
                               id="config-include-patterns-{index}"
                               type="text"
@@ -518,15 +522,13 @@
                               }}
                               placeholder="*.yaml, *.json"
                             />
-                          </div>
+                          </FormGroup>
 
-                          <div class="form-group">
-                            <label for="config-exclude-patterns-{index}">
-                              Exclude File Patterns
-                              <span class="help-text"
-                                >(Comma-separated glob patterns, e.g., *.backup)</span
-                              >
-                            </label>
+                          <FormGroup
+                            label="Exclude File Patterns"
+                            for="config-exclude-patterns-{index}"
+                            helpText="(Comma-separated glob patterns, e.g., *.backup)"
+                          >
                             <input
                               id="config-exclude-patterns-{index}"
                               type="text"
@@ -540,14 +542,11 @@
                               }}
                               placeholder="*.backup, temp/*"
                             />
-                          </div>
+                          </FormGroup>
                         {/if}
 
                         <div class="form-row">
-                          <div class="form-group">
-                            <label for="config-max-backups-{index}"
-                              >Max Backups</label
-                            >
+                          <FormGroup label="Max Backups" for="config-max-backups-{index}">
                             <input
                               id="config-max-backups-{index}"
                               type="number"
@@ -555,12 +554,9 @@
                               placeholder="Default"
                               min="1"
                             />
-                          </div>
+                          </FormGroup>
 
-                          <div class="form-group">
-                            <label for="config-max-age-{index}"
-                              >Max Age (Days)</label
-                            >
+                          <FormGroup label="Max Age (Days)" for="config-max-age-{index}">
                             <input
                               id="config-max-age-{index}"
                               type="number"
@@ -568,7 +564,7 @@
                               placeholder="Default"
                               min="1"
                             />
-                          </div>
+                          </FormGroup>
                         </div>
                       </div>
                     {/if}
@@ -581,22 +577,21 @@
       </section>
 
       <div class="modal-actions">
-        <button
-          class="btn btn-secondary"
+        <Button
+          label="Cancel"
+          variant="secondary"
           type="button"
           onclick={onClose}
           disabled={saving}
-        >
-          Cancel
-        </button>
-        <button
-          class="btn btn-primary"
+        />
+        <Button
+          label={saving ? "Saving..." : "Save Settings"}
+          variant="success"
           type="button"
           onclick={handleSave}
           disabled={saving}
-        >
-          {saving ? "Saving..." : "Save Settings"}
-        </button>
+          loading={saving}
+        />
       </div>
     </div>
   {/if}
@@ -615,45 +610,12 @@
   .loading {
     text-align: center;
     padding: 3rem;
-    color: var(--secondary-text-color, #9b9b9b);
-  }
-
-  .alert {
-    padding: 1rem;
-    border-radius: 6px;
-    margin-bottom: 1rem;
-  }
-
-  .alert-error {
-    background: rgba(244, 67, 54, 0.1);
-    border: 1px solid var(--error-color, #f44336);
-    color: var(--error-color, #f44336);
-  }
-
-  .alert-warning {
-    background: rgba(255, 152, 0, 0.1);
-    border: 1px solid var(--warning-color, #ff9800);
-    color: var(--warning-color, #ff9800);
-  }
-
-  .alert-success {
-    background: rgba(76, 175, 80, 0.1);
-    border: 1px solid var(--success-color, #4caf50);
-    color: var(--success-color, #4caf50);
-  }
-
-  .alert ul {
-    margin: 0.5rem 0;
-    padding-left: 1.5rem;
-  }
-
-  .alert li {
-    margin: 0.25rem 0;
+    color: var(--secondary-text-color);
   }
 
   .settings-section .section-heading {
     margin: 0 0 1rem 0;
-    color: var(--primary-text-color, #ffffff);
+    color: var(--primary-text-color);
     font-size: 1.1rem;
     font-weight: 500;
   }
@@ -669,7 +631,7 @@
   }
 
   .section-heading:hover {
-    color: var(--primary-color, #03a9f4);
+    color: var(--primary-color);
   }
 
   .section-toggle {
@@ -694,122 +656,31 @@
     margin: 0;
   }
 
-  .form-group {
-    margin-bottom: 1rem;
-  }
-
-  .form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: var(--primary-text-color, #ffffff);
-    font-size: 0.9rem;
-    font-weight: 500;
-  }
-
-  .help-text {
-    color: var(--secondary-text-color, #9b9b9b);
-    font-size: 0.8rem;
-    font-weight: 400;
-  }
-
-  .form-group input,
-  .form-group select {
-    width: 100%;
-    padding: 0.6rem;
-    background: var(--ha-card-background, #2c2c2e);
-    border: 1px solid var(--ha-card-border-color, #3c3c3e);
-    border-radius: 4px;
-    color: var(--primary-text-color, #ffffff);
-    font-size: 0.9rem;
-  }
-
-  .form-group input:focus,
-  .form-group select:focus {
-    outline: none;
-    border-color: var(--primary-color, #03a9f4);
-  }
-
   .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
   }
 
-  .btn-add {
-    background: var(--primary-color, #03a9f4);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: background-color 0.2s;
-  }
-
-  .btn-add:hover {
-    background: var(--primary-color-dark, #0288d1);
-  }
-
   .backup-action {
     margin-top: 1.5rem;
     padding-top: 1.5rem;
-    border-top: 1px solid var(--ha-card-border-color, #3c3c3e);
+    border-top: 1px solid var(--ha-card-border-color);
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
 
-  .btn-backup {
-    background: var(--success-color, #4caf50);
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
-    transition: all 0.2s;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    align-self: flex-start;
-  }
-
-  .btn-backup:hover:not(:disabled) {
-    background: var(--success-color-dark, #45a049);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
-  }
-
-  .btn-backup:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-  }
-
   .backup-help {
-    color: var(--secondary-text-color, #9b9b9b);
+    color: var(--secondary-text-color);
     font-size: 0.85rem;
     font-style: italic;
-  }
-
-  .btn-small {
-    background: var(--primary-color, #03a9f4);
-    color: white;
-    border: none;
-    padding: 0.4rem 0.8rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    margin-top: 0.5rem;
   }
 
   .empty-state {
     text-align: center;
     padding: 2rem;
-    color: var(--secondary-text-color, #9b9b9b);
+    color: var(--secondary-text-color);
     font-style: italic;
   }
 
@@ -820,8 +691,8 @@
   }
 
   .config-item {
-    background: var(--ha-card-background, #2c2c2e);
-    border: 1px solid var(--ha-card-border-color, #3c3c3e);
+    background: var(--ha-card-background);
+    border: 1px solid var(--ha-card-border-color);
     border-radius: 6px;
     padding: 1rem;
   }
@@ -836,15 +707,15 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    color: var(--primary-text-color, #ffffff);
+    color: var(--primary-text-color);
   }
 
   .config-type {
-    background: var(--ha-card-border-color, #3c3c3e);
+    background: var(--ha-card-border-color);
     padding: 0.2rem 0.6rem;
     border-radius: 12px;
     font-size: 0.75rem;
-    color: var(--secondary-text-color, #9b9b9b);
+    color: var(--secondary-text-color);
     text-transform: uppercase;
   }
 
@@ -853,38 +724,10 @@
     gap: 0.5rem;
   }
 
-  .btn-icon {
-    background: transparent;
-    border: 1px solid var(--ha-card-border-color, #3c3c3e);
-    color: var(--primary-text-color, #ffffff);
-    width: 2rem;
-    height: 2rem;
-    border-radius: 4px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    transition: all 0.2s;
-  }
-
-  .btn-icon:hover {
-    background: var(--ha-card-border-color, #3c3c3e);
-  }
-
-  .btn-icon.btn-danger {
-    color: var(--error-color, #f44336);
-    border-color: var(--error-color, #f44336);
-  }
-
-  .btn-icon.btn-danger:hover {
-    background: rgba(244, 67, 54, 0.1);
-  }
-
   .config-details {
     margin-top: 1rem;
     padding-top: 1rem;
-    border-top: 1px solid var(--ha-card-border-color, #3c3c3e);
+    border-top: 1px solid var(--ha-card-border-color);
   }
 
   .modal-actions {
@@ -892,40 +735,7 @@
     justify-content: flex-end;
     gap: 1rem;
     padding-top: 1rem;
-    border-top: 1px solid var(--ha-card-border-color, #2c2c2e);
-  }
-
-  .btn {
-    padding: 0.6rem 1.5rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
-    border: none;
-    transition: background-color 0.2s;
-  }
-
-  .btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .btn-secondary {
-    background: var(--ha-card-border-color, #3c3c3e);
-    color: var(--primary-text-color, #ffffff);
-  }
-
-  .btn-secondary:hover:not(:disabled) {
-    background: var(--ha-card-border-color, #4c4c4e);
-  }
-
-  .btn-primary {
-    background: var(--success-color, #4caf50);
-    color: white;
-  }
-
-  .btn-primary:hover:not(:disabled) {
-    background: var(--success-color-dark, #45a049);
+    border-top: 1px solid var(--ha-card-border-color);
   }
 
   @media (max-width: 768px) {
