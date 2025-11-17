@@ -6,6 +6,7 @@
     UpdateSettingsResponse,
   } from "./types";
   import { api } from "./api";
+  import { getErrorMessage } from "./utils";
   import IconButton from "./components/IconButton.svelte";
   import Button from "./components/Button.svelte";
   import FormGroup from "./components/FormGroup.svelte";
@@ -54,7 +55,7 @@
       settings = await api.getSettings();
       originalSettings = JSON.parse(JSON.stringify(settings));
     } catch (err) {
-      error = err instanceof Error ? err.message : "Failed to load settings";
+      error = getErrorMessage(err, "Failed to load settings");
     } finally {
       loading = false;
     }
@@ -165,7 +166,7 @@
         error = response.error;
       }
     } catch (err) {
-      error = err instanceof Error ? err.message : "Failed to save settings";
+      error = getErrorMessage(err, "Failed to save settings");
     } finally {
       saving = false;
     }
@@ -225,7 +226,7 @@
         backupSuccess = false;
       }, 3000);
     } catch (err) {
-      error = err instanceof Error ? err.message : "Failed to trigger backup";
+      error = getErrorMessage(err, "Failed to trigger backup");
     } finally {
       backingUp = false;
     }

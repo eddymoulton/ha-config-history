@@ -57,7 +57,7 @@
     try {
       backups = await api.getConfigBackups(config.group, config.id);
     } catch (err) {
-      error = err instanceof Error ? err.message : "Failed to load backups";
+      error = getErrorMessage(err, "Failed to load backups");
     } finally {
       loading = false;
     }

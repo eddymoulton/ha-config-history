@@ -35,3 +35,7 @@ export function formatRelativeTime(dateString: string): string {
 
   return formatDate(dateString);
 }
+
+export function getErrorMessage(err: unknown, defaultMessage: string): string {
+  return err instanceof Error ? err.message : defaultMessage;
+}

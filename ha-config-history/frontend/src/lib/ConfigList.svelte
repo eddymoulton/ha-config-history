@@ -51,7 +51,7 @@
       configs = await api.getConfigs();
       selectedGroup = groups[0];
     } catch (err) {
-      error = err instanceof Error ? err.message : "Failed to load configs";
+      error = getErrorMessage(err, "Failed to load configs");
     } finally {
       loading = false;
     }

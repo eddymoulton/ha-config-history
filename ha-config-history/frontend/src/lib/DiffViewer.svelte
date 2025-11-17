@@ -128,7 +128,7 @@
           break;
       }
     } catch (err) {
-      error = err instanceof Error ? err.message : "Failed to load diff";
+      error = getErrorMessage(err, "Failed to load diff");
     } finally {
       loading = false;
     }
@@ -214,7 +214,7 @@
         error = response.error || "Failed to restore backup";
       }
     } catch (err) {
-      error = err instanceof Error ? err.message : "Failed to restore backup";
+      error = getErrorMessage(err, "Failed to restore backup");
     } finally {
       restoringBackup = null;
     }

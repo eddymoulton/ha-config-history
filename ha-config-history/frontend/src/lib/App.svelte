@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount, onDestroy } from "svelte";
   import ConfigList from "./ConfigList.svelte";
   import BackupList from "./BackupList.svelte";
   import DiffViewer from "./DiffViewer.svelte";
