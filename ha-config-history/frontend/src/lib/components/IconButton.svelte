@@ -22,7 +22,6 @@
     variant = "ghost",
     size = "medium",
     loading = false,
-    class: className = "",
     onclick = undefined,
     onmouseenter = undefined,
     onmouseleave = undefined,
@@ -32,7 +31,7 @@
   }: Props = $props();
 
   const iconButtonClass = $derived(
-    ["icon-btn", `icon-btn-${size}`, className].filter(Boolean).join(" ")
+    ["icon-btn", `icon-btn-${size}`].filter(Boolean).join(" ")
   );
 </script>
 

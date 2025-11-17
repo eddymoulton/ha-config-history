@@ -6,7 +6,6 @@
    * Provides consistent header styling with title and optional action props
    */
   type Props = {
-    class?: string;
     title?: string;
     subtitle?: string;
     left?: Snippet;
@@ -15,7 +14,6 @@
     subtitleSnippet?: Snippet;
   };
   let {
-    class: className = "",
     title = undefined,
     subtitle = undefined,
     left = undefined,
@@ -24,9 +22,7 @@
     subtitleSnippet = undefined,
   }: Props = $props();
 
-  const headerClass = $derived(
-    ["list-header", className].filter(Boolean).join(" ")
-  );
+  const headerClass = $derived(["list-header"].filter(Boolean).join(" "));
 </script>
 
 <div class={headerClass}>

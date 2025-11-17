@@ -3,20 +3,13 @@
     label?: string;
     for?: string;
     helpText?: string;
-    class?: string;
     children?: any;
   }
 
-  let {
-    label,
-    for: forId,
-    helpText,
-    class: className = "",
-    children
-  }: FormGroupProps = $props();
+  let { label, for: forId, helpText, children }: FormGroupProps = $props();
 </script>
 
-<div class="form-group {className}">
+<div class="form-group">
   {#if label}
     <label for={forId}>
       {label}
