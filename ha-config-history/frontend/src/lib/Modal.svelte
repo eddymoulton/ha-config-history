@@ -78,8 +78,8 @@
   }
 
   .modal-content {
-    background: var(--ha-card-background, #1c1c1e);
-    border: 1px solid var(--ha-card-border-color, #2c2c2e);
+    background: var(--ha-card-background);
+    border: 1px solid var(--ha-card-border-color);
     border-radius: 8px;
     width: 100%;
     max-width: 800px;
@@ -94,12 +94,12 @@
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem 1.5rem 1rem 1.5rem;
-    border-bottom: 1px solid var(--ha-card-border-color, #2c2c2e);
+    border-bottom: 1px solid var(--ha-card-border-color);
     flex-shrink: 0;
   }
 
   .modal-header h2 {
-    color: var(--primary-text-color, #ffffff);
+    color: var(--primary-text-color);
     font-size: 1.5rem;
     font-weight: 500;
     margin: 0;
@@ -113,7 +113,7 @@
 
   .modal-footer {
     padding: 1rem 1.5rem 1.5rem 1.5rem;
-    border-top: 1px solid var(--ha-card-border-color, #2c2c2e);
+    border-top: 1px solid var(--ha-card-border-color);
     display: flex;
     gap: 1rem;
     justify-content: flex-end;

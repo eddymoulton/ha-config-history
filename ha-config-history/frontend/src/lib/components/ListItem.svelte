@@ -39,7 +39,7 @@
 
 <style>
   .list-item-title {
-    color: var(--primary-text-color, #ffffff);
+    color: var(--primary-text-color);
     font-size: 1rem;
     font-weight: 500;
     margin: 0;

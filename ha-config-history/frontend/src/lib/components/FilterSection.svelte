@@ -17,12 +17,12 @@
     flex-direction: column;
     gap: 0.75rem;
     padding: 1.5rem;
-    border-bottom: 1px solid var(--ha-card-border-color, #2c2c2e);
+    border-bottom: 1px solid var(--ha-card-border-color);
     flex-shrink: 0;
     position: sticky;
     top: 0;
     z-index: 10;
-    background: var(--ha-card-background, #1c1c1e);
+    background: var(--ha-card-background);
     min-height: 140px;
   }
 

@@ -31,7 +31,7 @@
   .empty {
     text-align: center;
     padding: 3rem 1.5rem;
-    color: var(--secondary-text-color, #9b9b9b);
+    color: var(--secondary-text-color);
     font-size: 1rem;
   }
 </style>

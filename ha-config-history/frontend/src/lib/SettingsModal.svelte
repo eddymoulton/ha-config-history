@@ -610,12 +610,12 @@
   .loading {
     text-align: center;
     padding: 3rem;
-    color: var(--secondary-text-color, #9b9b9b);
+    color: var(--secondary-text-color);
   }
 
   .settings-section .section-heading {
     margin: 0 0 1rem 0;
-    color: var(--primary-text-color, #ffffff);
+    color: var(--primary-text-color);
     font-size: 1.1rem;
     font-weight: 500;
   }
@@ -631,7 +631,7 @@
   }
 
   .section-heading:hover {
-    color: var(--primary-color, #03a9f4);
+    color: var(--primary-color);
   }
 
   .section-toggle {
@@ -665,14 +665,14 @@
   .backup-action {
     margin-top: 1.5rem;
     padding-top: 1.5rem;
-    border-top: 1px solid var(--ha-card-border-color, #3c3c3e);
+    border-top: 1px solid var(--ha-card-border-color);
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
 
   .backup-help {
-    color: var(--secondary-text-color, #9b9b9b);
+    color: var(--secondary-text-color);
     font-size: 0.85rem;
     font-style: italic;
   }
@@ -680,7 +680,7 @@
   .empty-state {
     text-align: center;
     padding: 2rem;
-    color: var(--secondary-text-color, #9b9b9b);
+    color: var(--secondary-text-color);
     font-style: italic;
   }
 
@@ -691,8 +691,8 @@
   }
 
   .config-item {
-    background: var(--ha-card-background, #2c2c2e);
-    border: 1px solid var(--ha-card-border-color, #3c3c3e);
+    background: var(--ha-card-background);
+    border: 1px solid var(--ha-card-border-color);
     border-radius: 6px;
     padding: 1rem;
   }
@@ -707,15 +707,15 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    color: var(--primary-text-color, #ffffff);
+    color: var(--primary-text-color);
   }
 
   .config-type {
-    background: var(--ha-card-border-color, #3c3c3e);
+    background: var(--ha-card-border-color);
     padding: 0.2rem 0.6rem;
     border-radius: 12px;
     font-size: 0.75rem;
-    color: var(--secondary-text-color, #9b9b9b);
+    color: var(--secondary-text-color);
     text-transform: uppercase;
   }
 
@@ -727,7 +727,7 @@
   .config-details {
     margin-top: 1rem;
     padding-top: 1rem;
-    border-top: 1px solid var(--ha-card-border-color, #3c3c3e);
+    border-top: 1px solid var(--ha-card-border-color);
   }
 
   .modal-actions {
@@ -735,7 +735,7 @@
     justify-content: flex-end;
     gap: 1rem;
     padding-top: 1rem;
-    border-top: 1px solid var(--ha-card-border-color, #2c2c2e);
+    border-top: 1px solid var(--ha-card-border-color);
   }
 
   @media (max-width: 768px) {

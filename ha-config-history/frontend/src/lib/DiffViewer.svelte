@@ -365,7 +365,7 @@
     display: flex;
     flex-direction: column;
     height: calc(100vh - 84px);
-    background: var(--ha-card-background, #1c1c1e);
+    background: var(--ha-card-background);
   }
 
   .title-container {
@@ -377,7 +377,7 @@
 
   .header {
     padding: 1.5rem;
-    border-bottom: 1px solid var(--ha-card-border-color, #2c2c2e);
+    border-bottom: 1px solid var(--ha-card-border-color);
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
@@ -385,13 +385,13 @@
     position: sticky;
     top: 0;
     z-index: 10;
-    background: var(--ha-card-background, #1c1c1e);
+    background: var(--ha-card-background);
     min-height: 140px;
   }
 
   .header h2 {
     margin: 0;
-    color: var(--primary-text-color, #ffffff);
+    color: var(--primary-text-color);
     font-size: 1.2rem;
     font-weight: 500;
     word-break: break-all;
@@ -415,7 +415,7 @@
     position: sticky;
     top: 0;
     z-index: 9;
-    background: var(--ha-card-background, #1c1c1e);
+    background: var(--ha-card-background);
   }
 
   .comparison-modes {
@@ -431,14 +431,14 @@
   }
 
   .backup-selector label {
-    color: var(--secondary-text-color, #9b9b9b);
+    color: var(--secondary-text-color);
     font-size: 0.9rem;
   }
 
   .backup-selector select {
-    background: var(--ha-card-background, #2c2c2e);
-    color: var(--primary-text-color, #ffffff);
-    border: 1px solid var(--ha-card-border-color, #3c3c3e);
+    background: var(--ha-card-background);
+    color: var(--primary-text-color);
+    border: 1px solid var(--ha-card-border-color);
     padding: 0.5rem;
     border-radius: 4px;
     font-size: 0.9rem;
@@ -460,7 +460,7 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    color: var(--secondary-text-color, #9b9b9b);
+    color: var(--secondary-text-color);
     font-size: 0.9rem;
     flex-wrap: wrap;
   }
@@ -468,20 +468,20 @@
   .file-old,
   .file-new {
     font-family: monospace;
-    color: var(--primary-text-color, #ffffff);
+    color: var(--primary-text-color);
   }
 
   .file-old small,
   .file-new small {
-    color: var(--secondary-text-color, #9b9b9b);
+    color: var(--secondary-text-color);
     font-size: 0.8em;
   }
 
   .diff-body {
     flex: 1;
     overflow-y: auto;
-    background: var(--ha-card-background, #000);
-    border: 1px solid var(--ha-card-border-color, #2c2c2e);
+    background: var(--ha-card-background);
+    border: 1px solid var(--ha-card-border-color);
     border-radius: 4px;
     font-family: "Courier New", monospace;
     font-size: 0.85rem;
@@ -501,7 +501,7 @@
     min-width: 3rem;
     margin-right: 1rem;
     text-align: right;
-    color: var(--secondary-text-color, #9b9b9b);
+    color: var(--secondary-text-color);
     user-select: none;
     flex-shrink: 0;
   }
@@ -513,30 +513,30 @@
 
   :global(.diff-line.added) {
     background: rgba(76, 175, 80, 0.2);
-    color: var(--success-color, #4caf50);
-    border-left-color: var(--success-color, #4caf50);
+    color: var(--success-color);
+    border-left-color: var(--success-color);
   }
 
   :global(.diff-line.removed) {
     background: rgba(244, 67, 54, 0.2);
-    color: var(--error-color, #f44336);
-    border-left-color: var(--error-color, #f44336);
+    color: var(--error-color);
+    border-left-color: var(--error-color);
   }
 
   :global(.diff-line.context) {
     background: rgba(3, 169, 244, 0.1);
-    color: var(--primary-color, #03a9f4);
+    color: var(--primary-color);
     font-weight: 600;
   }
 
   :global(.diff-line.file-header) {
-    background: var(--ha-card-border-color, #2c2c2e);
-    color: var(--secondary-text-color, #9b9b9b);
+    background: var(--ha-card-border-color);
+    color: var(--secondary-text-color);
     font-weight: 600;
   }
 
   :global(.diff-line.unchanged) {
-    color: var(--primary-text-color, #ffffff);
+    color: var(--primary-text-color);
   }
 
   .content-view {
@@ -555,24 +555,24 @@
   }
 
   .content-header h4 {
-    color: var(--primary-text-color, #ffffff);
+    color: var(--primary-text-color);
     margin: 0;
   }
 
   .first-backup-notice {
-    color: var(--warning-color, #ff9800);
+    color: var(--warning-color);
     font-size: 0.9rem;
     font-style: italic;
   }
 
   .content-body {
     flex: 1;
-    background: var(--ha-card-background, #000);
-    border: 1px solid var(--ha-card-border-color, #2c2c2e);
+    background: var(--ha-card-background);
+    border: 1px solid var(--ha-card-border-color);
     border-radius: 4px;
     padding: 1rem;
     overflow-y: auto;
-    color: var(--primary-text-color, #ffffff);
+    color: var(--primary-text-color);
     font-family: "Courier New", monospace;
     font-size: 0.85rem;
     line-height: 1.4;

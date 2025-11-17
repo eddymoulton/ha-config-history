@@ -38,8 +38,8 @@
 
 <style>
   .card {
-    background: var(--ha-card-background, #1c1c1e);
-    border: 1px solid var(--ha-card-border-color, #2c2c2e);
+    background: var(--ha-card-background);
+    border: 1px solid var(--ha-card-border-color);
     border-radius: 8px;
     padding: 0.5rem 1rem;
     transition: all 0.2s ease;
@@ -55,23 +55,23 @@
   .card.clickable.hover-lift:focus {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    border-color: var(--primary-color, #03a9f4);
+    border-color: var(--primary-color);
   }
 
   .card.clickable.hover-slide:hover,
   .card.clickable.hover-slide:focus {
-    background: var(--ha-card-border-color, #3c3c3e);
-    border-color: var(--primary-color, #03a9f4);
+    background: var(--ha-card-border-color);
+    border-color: var(--primary-color);
     transform: translateX(4px);
   }
 
   .card.selected {
-    border-color: var(--primary-color, #03a9f4);
+    border-color: var(--primary-color);
     background: rgba(3, 169, 244, 0.1);
   }
 
   .card.current {
-    border-color: var(--success-color, #4caf50);
+    border-color: var(--success-color);
     background: rgba(76, 175, 80, 0.1);
   }
 

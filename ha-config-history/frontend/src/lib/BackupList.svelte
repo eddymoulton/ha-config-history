@@ -214,7 +214,7 @@
   }
 
   .current-badge {
-    background: var(--success-color, #4caf50);
+    background: var(--success-color);
     color: white;
     padding: 0.15rem 0.4rem;
     margin-left: 1rem;
@@ -226,7 +226,7 @@
   }
 
   .backup-size {
-    color: var(--secondary-text-color, #9b9b9b);
+    color: var(--secondary-text-color);
     font-size: 0.85rem;
     font-weight: 500;
     min-width: 50px;
@@ -234,14 +234,14 @@
   }
 
   .backup-date {
-    color: var(--secondary-text-color, #9b9b9b);
+    color: var(--secondary-text-color);
     font-size: 0.8rem;
     display: flex;
     gap: 0.5rem;
   }
 
   .backup-count {
-    color: var(--secondary-text-color, #9b9b9b);
+    color: var(--secondary-text-color);
     font-size: 0.85rem;
     white-space: nowrap;
     align-content: end;
@@ -249,10 +249,10 @@
 
   .backup-info {
     font-family: monospace;
-    background: var(--ha-card-border-color, #2c2c2e);
+    background: var(--ha-card-border-color);
     padding: 0.5rem;
     border-radius: 4px;
-    color: var(--primary-text-color, #ffffff);
+    color: var(--primary-text-color);
     font-size: 0.85rem;
   }
 </style>

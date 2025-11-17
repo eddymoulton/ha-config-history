@@ -94,7 +94,7 @@
     height: 100%;
     left: 50%;
     transform: translateY(-50%);
-    background: var(--ha-card-border-color, #2c2c2e);
+    background: var(--ha-card-border-color);
   }
 
   .resize-handle.horizontal::before {
@@ -102,12 +102,12 @@
     width: 100%;
     top: 50%;
     transform: translateX(-50%);
-    background: var(--ha-card-border-color, #2c2c2e);
+    background: var(--ha-card-border-color);
   }
 
   .resize-handle:hover::before,
   .resize-handle.dragging::before {
-    background: var(--primary-color, #03a9f4);
+    background: var(--primary-color);
   }
 
   .resize-handle.vertical:hover::before,

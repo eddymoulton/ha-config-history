@@ -56,26 +56,26 @@
 
   .alert-error {
     background: rgba(244, 67, 54, 0.1);
-    border: 1px solid var(--error-color, #f44336);
-    color: var(--error-color, #f44336);
+    border: 1px solid var(--error-color);
+    color: var(--error-color);
   }
 
   .alert-warning {
     background: rgba(255, 152, 0, 0.1);
-    border: 1px solid var(--warning-color, #ff9800);
-    color: var(--warning-color, #ff9800);
+    border: 1px solid var(--warning-color);
+    color: var(--warning-color);
   }
 
   .alert-success {
     background: rgba(76, 175, 80, 0.1);
-    border: 1px solid var(--success-color, #4caf50);
-    color: var(--success-color, #4caf50);
+    border: 1px solid var(--success-color);
+    color: var(--success-color);
   }
 
   .alert-info {
     background: rgba(33, 150, 243, 0.1);
-    border: 1px solid var(--info-color, #2196f3);
-    color: var(--info-color, #2196f3);
+    border: 1px solid var(--info-color);
+    color: var(--info-color);
   }
 
   .alert :global(ul) {

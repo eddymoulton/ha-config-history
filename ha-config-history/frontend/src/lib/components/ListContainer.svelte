@@ -21,6 +21,6 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background: var(--ha-card-background, #1c1c1e);
+    background: var(--ha-card-background);
   }
 </style>

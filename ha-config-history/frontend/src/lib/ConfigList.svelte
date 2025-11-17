@@ -237,7 +237,7 @@
   }
 
   .filter-count {
-    color: var(--secondary-text-color, #9b9b9b);
+    color: var(--secondary-text-color);
     font-size: 0.85rem;
     white-space: nowrap;
     align-content: end;
@@ -261,29 +261,29 @@
   }
 
   .stat-label {
-    color: var(--secondary-text-color, #9b9b9b);
+    color: var(--secondary-text-color);
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   .stat-value {
-    color: var(--primary-text-color, #ffffff);
+    color: var(--primary-text-color);
     font-size: 0.9rem;
     font-weight: 400;
   }
 
   .config-info {
     font-weight: 600;
-    background: var(--ha-card-border-color, #2c2c2e);
+    background: var(--ha-card-border-color);
     padding: 0.5rem;
     border-radius: 4px;
-    color: var(--primary-text-color, #ffffff);
+    color: var(--primary-text-color);
     font-size: 0.95rem;
   }
 
   .warning-text {
-    color: var(--error-color, #f44336);
+    color: var(--error-color);
     font-weight: 500;
     font-size: 0.9rem;
   }

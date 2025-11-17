@@ -53,12 +53,12 @@
 <style>
   .list-header {
     padding: 1.5rem;
-    border-bottom: 1px solid var(--ha-card-border-color, #2c2c2e);
+    border-bottom: 1px solid var(--ha-card-border-color);
     flex-shrink: 0;
     position: sticky;
     top: 0;
     z-index: 10;
-    background: var(--ha-card-background, #1c1c1e);
+    background: var(--ha-card-background);
     min-height: 140px;
   }
 
@@ -70,7 +70,7 @@
 
   .header-row h2 {
     margin: 0;
-    color: var(--primary-text-color, #ffffff);
+    color: var(--primary-text-color);
     font-size: 1.2rem;
     font-weight: 500;
     flex: 1;
@@ -81,7 +81,7 @@
   }
 
   .subtitle-text {
-    color: var(--secondary-text-color, #9b9b9b);
+    color: var(--secondary-text-color);
     font-size: 0.85rem;
   }
 </style>

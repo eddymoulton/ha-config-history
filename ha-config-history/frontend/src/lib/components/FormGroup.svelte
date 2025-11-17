@@ -29,13 +29,13 @@
   .form-group label {
     display: block;
     margin-bottom: 0.5rem;
-    color: var(--primary-text-color, #ffffff);
+    color: var(--primary-text-color);
     font-size: 0.9rem;
     font-weight: 500;
   }
 
   .help-text {
-    color: var(--secondary-text-color, #9b9b9b);
+    color: var(--secondary-text-color);
     font-size: 0.8rem;
     font-weight: 400;
   }

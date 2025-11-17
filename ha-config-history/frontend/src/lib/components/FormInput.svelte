@@ -37,33 +37,33 @@
   .form-input {
     width: 100%;
     padding: 0.6rem;
-    background: var(--ha-card-background, #2c2c2e);
-    border: 1px solid var(--ha-card-border-color, #3c3c3e);
+    background: var(--ha-card-background);
+    border: 1px solid var(--ha-card-border-color);
     border-radius: 4px;
-    color: var(--primary-text-color, #ffffff);
+    color: var(--primary-text-color);
     font-size: 0.9rem;
   }
 
   .form-input:focus {
     outline: none;
-    border-color: var(--primary-color, #03a9f4);
+    border-color: var(--primary-color);
   }
 
   .form-input.changed {
-    border-color: var(--warning-color, #ff9800);
+    border-color: var(--warning-color);
   }
 
   /* Search input specific styles */
   .form-input.search-input {
     width: 80%;
-    background: var(--ha-card-background, #1c1c1e);
-    border: 1px solid var(--ha-card-border-color, #2c2c2e);
-    color: var(--primary-text-color, #ffffff);
+    background: var(--ha-card-background);
+    border: 1px solid var(--ha-card-border-color);
+    color: var(--primary-text-color);
     font-size: 0.9rem;
   }
 
   .form-input.search-input:focus {
     outline: none;
-    border-color: var(--primary-color, #03a9f4);
+    border-color: var(--primary-color);
   }
 </style>

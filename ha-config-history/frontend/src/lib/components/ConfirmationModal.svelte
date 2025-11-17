@@ -58,7 +58,7 @@
 <style>
   .message {
     margin: 0 0 1rem 0;
-    color: var(--secondary-text-color, #9b9b9b);
+    color: var(--secondary-text-color);
     line-height: 1.5;
   }
 </style>
