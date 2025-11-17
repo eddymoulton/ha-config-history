@@ -9,7 +9,7 @@
   } from "./types";
   import { api } from "./api";
   import Button from "./components/Button.svelte";
-  import { formatRelativeTime } from "./utils";
+  import { formatRelativeTime, getErrorMessage } from "./utils";
   import LoadingState from "./LoadingState.svelte";
   import Alert from "./components/Alert.svelte";
 

@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import type { ConfigMetadata, BackupInfo } from "./types";
   import { api } from "./api";
-  import { formatFileSize, formatRelativeTime } from "./utils";
+  import { formatFileSize, formatRelativeTime, getErrorMessage } from "./utils";
   import LoadingState from "./LoadingState.svelte";
   import Button from "./components/Button.svelte";
   import IconButton from "./components/IconButton.svelte";
