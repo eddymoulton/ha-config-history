@@ -2,8 +2,8 @@ name: HA Config History
 version: 1.2.1
 slug: ha-config-history
 description: Git like change history without git
-url: https://github.com/eddymoulton/ha-config-history
-changelog: https://github.com/eddymoulton/ha-config-history/blob/main/CHANGELOG.md
+url: https://github.com/eddymoulton/ha-addons
+changelog: https://github.com/eddymoulton/ha-addons/blob/main/ha-config-history/CHANGELOG.md
 arch:
   - amd64
 webui: http://[HOST]:[PORT:40613]

@@ -13,7 +13,7 @@ Create a timeline of changes to yaml (or any text file) configuration in Home As
 
 ## Screenshots
 
-![Homescreen](https://github.com/eddymoulton/ha-config-history/raw/main/ha-config-history/assets/home.png)
+![Homescreen](https://github.com/eddymoulton/ha-addons/raw/main/ha-config-history/assets/home.png)
 
 ## Installation
 
@@ -21,11 +21,11 @@ Create a timeline of changes to yaml (or any text file) configuration in Home As
 
 1. Add this repository to your Home Assistant add-on store:
 
-   [![Open your Home Assistant instance and show the add add-on repository dialog with a specific repository URL pre-filled.](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Feddymoulton%2Fha-config-history)
+   [![Open your Home Assistant instance and show the add add-on repository dialog with a specific repository URL pre-filled.](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Feddymoulton%2Fha-addons)
 
    Or manually:
    - Navigate to **Settings** → **Add-ons** → **Add-on Store** → **⋮** (three dots) → **Repositories**
-   - Add: `https://github.com/eddymoulton/ha-config-history`
+   - Add: `https://github.com/eddymoulton/ha-addons`
 
 2. Find "HA Config History" in the add-on store and click **Install**
 
@@ -57,7 +57,7 @@ All configuration is done via the web app
 
 ### General Settings
 
-<img width="721" height="521" alt="image" src="https://github.com/eddymoulton/ha-config-history/raw/main/ha-config-history/assets/general-settings.png" />
+<img width="721" height="521" alt="image" src="https://github.com/eddymoulton/ha-addons/raw/main/ha-config-history/assets/general-settings.png" />
 
 | Setting                             | Description                                                                                                                                                                                              |
 | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -70,7 +70,7 @@ All configuration is done via the web app
 
 ### Config Backup Options
 
-<img width="727" height="692" alt="image" src="https://github.com/eddymoulton/ha-config-history/raw/main/ha-config-history/assets/config-backup-options.png" />
+<img width="727" height="692" alt="image" src="https://github.com/eddymoulton/ha-addons/raw/main/ha-config-history/assets/config-backup-options.png" />
 
 | Setting         | Description                                                                          |
 | --------------- | ------------------------------------------------------------------------------------ |
