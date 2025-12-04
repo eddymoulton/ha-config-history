@@ -341,22 +341,21 @@
   {#if settings}
     <div class="config-item">
       <div class="config-header">
-        <div class="config-title">
+        <!-- svelte-ignore a11y_click_events_have_key_events -->
+        <div
+          class="config-title"
+          onclick={() =>
+            (editingConfigIndex = editingConfigIndex === index ? null : index)}
+          role="button"
+          tabindex="0"
+        >
+          <span class="config-toggle">
+            {editingConfigIndex === index ? "▼" : "▶"}
+          </span>
           <strong>{config.name || "(Unnamed)"}</strong>
           <span class="config-type">{config.backupType}</span>
         </div>
         <div class="config-actions">
-          <IconButton
-            icon={editingConfigIndex === index ? "▼" : "▶"}
-            variant="outlined"
-            size="medium"
-            type="button"
-            onclick={() =>
-              (editingConfigIndex =
-                editingConfigIndex === index ? null : index)}
-            title="Edit"
-            aria-label="Edit"
-          />
           <IconButton
             icon="⧉"
             variant="outlined"
@@ -722,6 +721,21 @@
     align-items: center;
     gap: 0.75rem;
     color: var(--primary-text-color);
+    cursor: pointer;
+    user-select: none;
+    flex: 1;
+    transition: color 0.2s;
+  }
+
+  .config-title:hover {
+    color: var(--primary-color);
+  }
+
+  .config-toggle {
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    transition: transform 0.2s;
   }
 
   .config-type {
