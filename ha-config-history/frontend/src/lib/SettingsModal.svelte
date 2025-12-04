@@ -12,6 +12,7 @@
   import FormGroup from "./components/FormGroup.svelte";
   import FormInput from "./components/FormInput.svelte";
   import Alert from "./components/Alert.svelte";
+  import FormSelect from "./components/FormSelect.svelte";
 
   type Props = {
     isOpen: boolean;
@@ -453,7 +454,7 @@
                     {#if editingConfigIndex === index}
                       <div class="config-details">
                         <FormGroup label="Name" for="config-name-{index}">
-                          <input
+                          <FormInput
                             id="config-name-{index}"
                             type="text"
                             bind:value={config.name}
@@ -462,7 +463,7 @@
                         </FormGroup>
 
                         <FormGroup label="Path" for="config-path-{index}">
-                          <input
+                          <FormInput
                             id="config-path-{index}"
                             type="text"
                             bind:value={config.path}
@@ -470,21 +471,31 @@
                           />
                         </FormGroup>
 
-                        <FormGroup label="Backup Type" for="config-type-{index}">
-                          <select
+                        <FormGroup
+                          label="Backup Type"
+                          for="config-type-{index}"
+                        >
+                          <FormSelect
                             id="config-type-{index}"
                             bind:value={config.backupType}
                           >
-                            <option value="multiple">Multiple</option>
-                            <option value="single">Single</option>
-                            <option value="directory">Directory</option>
-                          </select>
+                            <option value="multiple">
+                              Single YAML file with a list of items
+                            </option>
+                            <option value="single">Single file</option>
+                            <option value="directory">
+                              Directory of files
+                            </option>
+                          </FormSelect>
                         </FormGroup>
 
                         {#if config.backupType === "multiple"}
                           <div class="form-row">
-                            <FormGroup label="ID Node" for="config-id-node-{index}">
-                              <input
+                            <FormGroup
+                              label="ID Node"
+                              for="config-id-node-{index}"
+                            >
+                              <FormInput
                                 id="config-id-node-{index}"
                                 type="text"
                                 bind:value={config.idNode}
@@ -492,8 +503,11 @@
                               />
                             </FormGroup>
 
-                            <FormGroup label="Friendly Name Node" for="config-friendly-node-{index}">
-                              <input
+                            <FormGroup
+                              label="Friendly Name Node"
+                              for="config-friendly-node-{index}"
+                            >
+                              <FormInput
                                 id="config-friendly-node-{index}"
                                 type="text"
                                 bind:value={config.friendlyNameNode}
@@ -509,7 +523,7 @@
                             for="config-include-patterns-{index}"
                             helpText="(Comma-separated glob patterns, e.g., *.yaml, *.json)"
                           >
-                            <input
+                            <FormInput
                               id="config-include-patterns-{index}"
                               type="text"
                               value={config.includeFilePatterns?.join(", ") ||
@@ -529,7 +543,7 @@
                             for="config-exclude-patterns-{index}"
                             helpText="(Comma-separated glob patterns, e.g., *.backup)"
                           >
-                            <input
+                            <FormInput
                               id="config-exclude-patterns-{index}"
                               type="text"
                               value={config.excludeFilePatterns?.join(", ") ||
@@ -546,8 +560,11 @@
                         {/if}
 
                         <div class="form-row">
-                          <FormGroup label="Max Backups" for="config-max-backups-{index}">
-                            <input
+                          <FormGroup
+                            label="Max Backups"
+                            for="config-max-backups-{index}"
+                          >
+                            <FormInput
                               id="config-max-backups-{index}"
                               type="number"
                               bind:value={config.maxBackups}
@@ -556,8 +573,11 @@
                             />
                           </FormGroup>
 
-                          <FormGroup label="Max Age (Days)" for="config-max-age-{index}">
-                            <input
+                          <FormGroup
+                            label="Max Age (Days)"
+                            for="config-max-age-{index}"
+                          >
+                            <FormInput
                               id="config-max-age-{index}"
                               type="number"
                               bind:value={config.maxBackupAgeDays}

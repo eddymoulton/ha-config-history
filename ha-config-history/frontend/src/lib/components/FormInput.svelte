@@ -7,6 +7,9 @@
     changed?: boolean;
     min?: string;
     style?: "search-input" | null;
+    oninput?: (
+      e: Event & { currentTarget: EventTarget & HTMLInputElement }
+    ) => void;
   }
 
   let {
