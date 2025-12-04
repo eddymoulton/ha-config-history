@@ -331,22 +331,6 @@
               />
             </FormGroup>
           </div>
-
-          <div class="backup-action">
-            <Button
-              label={backingUp ? "Running Backup..." : "Backup Now"}
-              variant="success"
-              size="large"
-              type="button"
-              onclick={handleBackupNow}
-              disabled={backingUp}
-              loading={backingUp}
-              icon={backingUp ? undefined : "⚡"}
-            />
-            <span class="backup-help"
-              >Manually trigger a backup of all configured files</span
-            >
-          </div>
         </div>
       {/if}
     </section>
@@ -590,6 +574,22 @@
         </Alert>
       {/if}
 
+      <div class="backup-action">
+        <Button
+          label={backingUp ? "Running Backup..." : "Backup Now"}
+          variant="success"
+          size="large"
+          type="button"
+          onclick={handleBackupNow}
+          disabled={backingUp}
+          loading={backingUp}
+          icon={backingUp ? undefined : "⚡"}
+        />
+        <span class="backup-help"
+          >Manually trigger a backup of all configured files</span
+        >
+      </div>
+
       {@render generalSettings()}
       {@render configBackupOptions()}
 
@@ -680,9 +680,6 @@
   }
 
   .backup-action {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--ha-card-border-color);
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
