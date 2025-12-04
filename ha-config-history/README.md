@@ -95,7 +95,7 @@ Friendly Name Node will be what is displayed in the UI.
 
 Tracks a single configuration for a file (eg. configuration.yaml)
 
-The path should be directly to a YAML file.
+The path should be directly to a file.
 
 ##### Directory
 
